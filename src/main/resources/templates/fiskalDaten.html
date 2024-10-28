@@ -1,0 +1,103 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<body>
+<div th:fragment="fiskaldaten(fiskalService)">
+    <div class="table-responsive">
+        <div class="inhalt mb-3">
+            <a target="_blank" class="btn btn-warning btn-sm align-self-center"
+               th:href="@{'/exportCVSDaten/' + ${info.anlage.anlagenNr}}">
+                <i class="fas fa-download"></i> Export CSV-Datei
+            </a>
+            <a target="_blank" class="btn btn-warning btn-sm align-self-center"
+               th:href="@{'/exportPDFDaten/' + ${info.anlage.anlagenNr}}">
+                <i class="fas fa-download"></i> Export PDF-Datei
+            </a>
+        </div>
+        <table class="table table-bordered table-hover table-sm">
+            <thead class="table-secondary">
+            <tr>
+                <th>#</th>
+                <th>Bezeichnung</th>
+                <th>System-ID</th>
+                <th>Typ</th>
+                <th>Aktiv ab</th>
+                <th>Format</th>
+            </tr>
+            </thead>
+            <tbody th:each="item : ${fiskalService}">
+            <tr class="accordion-toggle collapsed" th:id="'accordion'+${item.fiskalId}"
+                data-bs-toggle="collapse" th:data-bs-target="'#collapse'+${item.fiskalId}"
+                style="cursor: pointer;">
+                <td class="expand-button"></td>
+                <td th:text="${item.bezeichnung}"></td>
+                <td th:text="${item.fSystemId}"></td>
+                <td th:text="${item.typ}"></td>
+                <td th:text="${#temporals.format(item.aktivAb, 'dd.MM.yyyy')}"></td>
+                <td th:text="${item.Format == 'N' ? 'normal' : item.Format}"></td>
+            </tr>
+            <tr class="collapse hide-table-padding" th:id="'collapse'+${item.fiskalId}">
+                <td></td>
+                <td colspan="5">
+                    <div class="p-2">
+                        <table class="table table-hover table-sm">
+                            <thead class="table-secondary">
+                            <tr>
+                                <th>#</th>
+                                <th>Bezeichnung</th>
+                                <th>Client/Cashbox-ID</th>
+                                <th>Reg/Term-ID</th>
+                                <th>Endpoint</th>
+                                <th>Benutzt</th>
+                                <th>Registriert</th>
+                            </tr>
+                            </thead>
+                            <tbody th:each="reg : ${item.regListe}">
+                            <tr class="accordion-toggle collapsed" th:id="'accordion'+${reg.id}"
+                                data-bs-toggle="collapse" th:data-bs-target="'#collapseReg'+${reg.id}"
+                                style="cursor: pointer;">
+                                <td class="expand-button"></td>
+                                <td th:text="${reg.bezeichnung}"></td>
+                                <td th:text="${reg.kennung}"></td>
+                                <td th:text="${reg.registerNr}"></td>
+                                <td th:text="${reg.endPoint}"></td>
+                                <td th:text="${reg.benutzt ? 'JA' : 'Nein'}"></td>
+                                <td th:text="${reg.registriert ? 'JA' : 'Nein'}"></td>
+                            </tr>
+                            <tr class="collapse hide-table-padding" th:id="'collapseReg'+${reg.id}"
+                                th:if="${not reg.arbeitsplatzListe.isEmpty()}">
+                                <td></td>
+                                <td colspan="6">
+                                    <div class="p-2">
+                                        <table class="table table-hover table-sm">
+                                            <thead class="table-secondary">
+                                            <tr>
+                                                <th>Kassen Nr.</th>
+                                                <th>Arbeitsplatz-ID</th>
+                                                <th>Bezeichnung</th>
+                                                <th>Profitcenter-ID</th>
+                                                <th>IP-Adresse</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody th:each="ar : ${reg.arbeitsplatzListe}">
+                                            <tr>
+                                                <td th:text="${ar.kassenNr}"></td>
+                                                <td th:text="${ar.arbeitsplatzId}"></td>
+                                                <td th:text="${ar.bezeichnung}"></td>
+                                                <td th:text="${ar.profitCenterId}"></td>
+                                                <td th:text="${ar.ip}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

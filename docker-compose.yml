@@ -1,0 +1,26 @@
+#
+#services:
+#  db:
+#    image: mysql:latest
+#    container_name: mysql-msi
+#    volumes:
+#      - C:/src/msi/mysql:/var/lib/mysql
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      MYSQL_ROOT_PASSWORD: password
+#      MYSQL_DATABASE: msidb
+#      MYSQL_USER: msiUser
+#      MYSQL_PASSWORD: 123456
+#
+#
+#  app:
+#    image: mafissysteminfo:latest
+#    depends_on:
+#      - db
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/msidb?createDatabaseIfNotExist=true
+#      SPRING_DATASOURCE_USERNAME: msiUser
+#      SPRING_DATASOURCE_PASSWORD: 123456

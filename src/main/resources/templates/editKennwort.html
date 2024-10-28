@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content">
+    <div class="container">
+        <div class="login-container shadow">
+            <div class="login-header">
+                Kennwort &Auml;ndern
+            </div>
+            <div class="login-body">
+                <form th:action="@{/saveKennwort}" th:object="${kennwort}" method="post">
+                    <!-- General error message -->
+                    <div th:if="${error}" class="alert alert-danger">
+                        <p th:text="${error}">Falsche Eingaben.</p>
+                    </div>
+
+                    <div th:if="${param.success}" class="alert alert-success">
+                        Ihr neues Kennwort wurde erfolgreich gespeichert!
+                    </div>
+
+                    <!-- Error message for 'altes Kennwort' -->
+                    <div th:if="${#fields.hasErrors('altesKennwort')}" class="text-danger">
+                        <p th:errors="*{altesKennwort}">Altes Kennwort Error</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="altesKennwort" class="form-label">Altes Kennwort :</label>
+                        <input type="password" id="altesKennwort" name="altesKennwort" class="form-control"
+                               placeholder="altes Kennwort" required="required"
+                               th:field="*{altesKennwort}">
+                    </div>
+
+                    <!-- Error message for 'neues Kennwort' -->
+                    <div th:if="${#fields.hasErrors('neuesKennwort')}" class="text-danger">
+                        <p th:errors="*{neuesKennwort}">Neues Kennwort Error</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="neuesKennwort" class="form-label">Neues Kennwort :</label>
+                        <input type="password" id="neuesKennwort" name="neuesKennwort" class="form-control"
+                               placeholder="neues Kennwort" required="required"
+                               th:field="*{neuesKennwort}">
+                    </div>
+
+                    <!-- Error message for 'neues Kennwort wiederholen' -->
+                    <div th:if="${#fields.hasErrors('wiederholung')}" class="text-danger">
+                        <p th:errors="*{wiederholung}">Wiederholung Kennwort Error</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="wiederholung" class="form-label">Neues Kennwort wiederholen:</label>
+                        <input type="password" id="wiederholung" name="wiederholung" class="form-control"
+                               placeholder="wiederholen" required="required"
+                               th:field="*{wiederholung}">
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-custom">Speichern</button>
+                        <button type="reset" class="btn btn-secondary">Abbrechen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+</body>
+</html>

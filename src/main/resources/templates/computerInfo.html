@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content">
+    <div class="container-fluid">
+        <div class="row align-items-baseline gy-3 mb-3">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <h4>Computer Information für:
+                    <span th:text="${computer.anlagenName}"></span> - Anlagen Nr.:
+                    <span th:text="${computer.anlagenNr}"></span>
+                </h4>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-2">
+                <a th:href="@{'/getSystemInfoByAnlage/' + ${computer.anlagenNr}}" data-toggle="tooltip" data-placement="top" title="zur SystemInformation">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <!-- Computer Details -->
+            <table class="table table-bordered table-hover table-sm customers-list">
+                <thead class="table-secondary">
+                <tr>
+                    <th>Computer Name</th>
+                    <th>Betriebssystem</th>
+                    <th>OS-Version</th>
+                    <th>Servicepack</th>
+                    <th>Hostname</th>
+                    <th>Userhome</th>
+                    <th>Javaversion</th>
+                    <th>Javahome</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${computer.computerName}"></td>
+                    <td th:text="${computer.betriebsSystem}"></td>
+                    <td th:text="${computer.betriebssystemVersion}"></td>
+                    <td th:text="${computer.servicePack}"></td>
+                    <td th:text="${computer.hostname}"></td>
+                    <td th:text="${computer.userHome}"></td>
+                    <td th:text="${computer.javaVersion}"></td>
+                    <td th:text="${computer.javaHome}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Memory Information -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-sm">
+                <thead class="table-secondary">
+                <tr>
+                    <th colspan="2">Memory</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${computer.memoryListe}">
+                    <td th:text="${item}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Prozessor Information -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-sm">
+                <thead class="table-secondary">
+                <tr>
+                    <th colspan="2">Prozessoren</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${computer.anzahlProcessors}"></td>
+                </tr>
+                <tr th:each="pr : ${computer.prozessorenListe}">
+                    <td th:text="${pr}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Drive Information -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-sm">
+                <thead class="table-secondary">
+                <tr>
+                    <th colspan="2">Laufwerken</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="dl : ${computer.drivesListe}">
+                    <td th:text="${dl}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Video Card Information -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-sm">
+                <thead class="table-secondary">
+                <tr>
+                    <th colspan="2">Grafikkarten</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${computer.videoCards}">
+                    <td th:text="${item}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Physical Disk Information -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-sm">
+                <thead class="table-secondary">
+                <tr>
+                    <th colspan="2">Physikalische Disk-Information</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${computer.physicalDiskInformation}">
+                    <td th:text="${item}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CD-ROM Information -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-sm">
+                <thead class="table-secondary">
+                <tr>
+                    <th colspan="2">CD-ROM-Info</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${computer.cdRomInformation}">
+                    <td th:text="${item}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Printer Information -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-sm">
+                <thead class="table-secondary">
+                <tr>
+                    <th colspan="2">Drucker</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${computer.anzahlPrinter}"></td>
+                </tr>
+                <tr th:each="item : ${computer.printer}">
+                    <td th:text="${item}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+</body>
+</html>

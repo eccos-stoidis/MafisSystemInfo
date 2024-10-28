@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content">
+    <div class="container-fluid">
+        <div class="row align-items-baseline gy-3 mb-3">
+            <div class="col-12 col-sm-4 col-lg-2">
+                <span class="h4">Benutzerliste</span>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-2">
+                <span>Anzahl Treffer: [[${users.size()}]]</span>
+            </div>
+            <div class="col-12 col-sm-4 col-lg-2">
+                <form th:action="@{/searchUser}" method="GET" class="form-inline">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" id="search" placeholder="Search">
+                        <button type="submit" title="Suchen" class="btn btn-custom">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-12 col-sm-4 col-lg-3" th:if="${T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}">
+                <a th:href="@{/editUser/{id}(id=0)}" class="btn btn-custom align-self-center" title="Neuer Benutzer hinzufügen">
+                    <i class="fas fa-user-plus"></i> Neuer Benutzer
+                </a>
+            </div>
+        </div>
+
+        <!-- Success message modal -->
+        <div th:if="${benutzerSuccess}" class="modal fade show" tabindex="-1" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #fecb01;">
+                        <h5 class="modal-title">Erfolg</h5>
+                        <button type="button" class="btn-close" aria-label="Close" onclick="this.closest('.modal').style.display='none';"></button>
+                    </div>
+                    <div class="modal-body text-center" style="background-color: #f8f9fa;">
+                        <h4>Die Änderungen wurden erfolgreich gespeichert!</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success message modal -->
+        <div th:if="${kennwortSuccess}" class="modal fade show" tabindex="-1" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #fecb01;">
+                        <h5 class="modal-title">Erfolg</h5>
+                        <button type="button" class="btn-close" aria-label="Close" onclick="this.closest('.modal').style.display='none';"></button>
+                    </div>
+                    <div class="modal-body text-center" style="background-color: #f8f9fa;">
+                        <h4>Das Kennwort wurde erfolgreich gesetzt </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-sm users-list" id="table">
+                <thead class="table-secondary">
+                <tr>
+                    <th>Benutzername</th>
+                    <th>Name</th>
+                    <th>E-Mail Adresse</th>
+                    <th>Rechte</th>
+                    <th>Bearbeiter</th>
+                    <th>Bearbeitet am</th>
+                    <th>Edit/Delete</th>
+                    <th>Reset Kennwort</th>
+                    <th>Edit Rechte</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.name}" nowrap="nowrap"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:each="role : ${user.userRollen}">
+                        <span th:text="${role.rolle.rolleName}"></span>
+                    </td>
+                    <td th:text="${user.bearbeitetVon}"></td>
+                    <td th:text="${#temporals.format(user.lastModified, 'dd.MM.yyyy')}"></td>
+                    <td class="text-center">
+                        <a th:href="@{'/editUser/' + ${user.userId}}" title="Benutzer editieren">
+                            <i class="fas fa-user-edit fa-2x"></i>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a th:href="@{'/resetKennwort/' + ${user.userId}}" title="Kennwort zurücksetzen">
+                            <i class="fas fa-redo-alt fa-2x"></i>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a th:href="@{'/editRolle/' + ${user.userId} + '/1'}" class="btn btn-outline-warning">Admin</a>
+                        <a th:href="@{'/editRolle/' + ${user.userId} + '/2'}" class="btn btn-outline-secondary">User</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:insert="~{fragments/pagination(url='allUsers')}"></div>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+</body>
+</html>

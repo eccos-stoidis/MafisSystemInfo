@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content" style="padding-bottom: 60px">
+    <div class="container-fluid ">
+        <div class="row align-items-baseline gy-3 mb-3">
+            <div class="col-12">
+                <span class="h4">Liste alle Fiskal-Daten</span>
+            </div>
+            <div class="col-12 col-sm-2">
+                <a  target="_blank" class="btn btn-custom align-self-center  "
+                    th:href="@{/exportFiskalCVSDaten}" > <i class="fas fa-download"></i>  als CSV-Datei </a>
+            </div>
+            <div class="col col-lg-2">
+                <input type="search" class="form-control search-input" name="search" id="search" placeholder="Search"
+                   data-table="customers-list">
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table  table-bordered table-hover table-sm customers-list" id="table">
+                <thead class="table-secondary">
+                <tr>
+                    <th id="collapse" > Anlagen Nr.</th>
+                    <th >Anlagenname </th>
+                    <th >Mafis-Version </th>
+                    <th >Typ	 </th>
+                    <th >Cashbox-Anzahl</th>
+                    <th >Registriert</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr  th:each ="item : ${fiskal}">
+                        <td class="colXSmall " th:utext="${item.anlagenNr}"></td>
+                        <td class="colBig" th:utext="${item.anlagenName}" nowrap="nowrap"></td>
+                        <td class="colXSmall" th:utext="${item.mafisVersion}" ></td>
+                        <td class="colXSmall " th:utext="${item.typ}" ></td>
+                        <td class="colXSmall" th:utext="${item.fiskalCount}" ></td>
+                        <td class="colXSmall" th:utext="${item.registriert ? 'Ja' : 'Nein'}" ></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div th:insert="~{fragments/pagination(url='alleFiskal')}"></div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+</body>
+</html>

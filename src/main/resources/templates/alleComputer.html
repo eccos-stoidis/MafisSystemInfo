@@ -1,0 +1,70 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content" style="padding-bottom: 60px">
+    <div class="container-fluid ">
+        <div class="row align-items-baseline gy-3 mb-3">
+            <div class="col-12 col-sm-4 col-lg-1">
+                <span class="h4">Computer Informationen</span>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-2">
+                <span>Anzahl Treffer: [[${elementeAnzahl}]] </span>
+            </div>
+            <div class="col-12 col-sm-4 col-lg-2">
+                <form th:replace="~{fragments/sucheComputer}"></form>
+            </div>
+            <div class="col-12 col-sm-4 col-lg-3">
+                <form th:replace="~{fragments/anzahlProSeite}"></form>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table  table-bordered table-hover table-sm customers-list" id="table">
+                <thead class="table-secondary">
+                <tr>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Anlagen Nr.', sortierenNach='anlagenNr', url='alleComputer')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Computer-Name', sortierenNach='computerName', url='alleComputer')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='IP-Adresse', sortierenNach='hostname', url='alleComputer')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Betriebssystem', sortierenNach='betriebsSystem', url='alleComputer')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Version', sortierenNach='javaVersion', url='alleComputer')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='letzte Aktualisierung', sortierenNach='servicePack', url='alleComputer')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Status', sortierenNach='lastModified', url='alleComputer')}"></th>
+                    <th nowrap="nowrap">zur Computerinformation</th>
+                </tr>
+                </thead>
+                <!-- Add this block to show a message when no results are found -->
+                <tbody>
+                <tr th:if="${#lists.isEmpty(computers)}">
+                    <td colspan="8" class="text-center">No results found.</td>
+                </tr>
+                </tbody>
+                <tr th:each="computer : ${computers}">
+                    <td>
+                        <span th:text="${computer.anlagenNr}"></span>
+                        <span th:text="${computer.anlagenName != null ?  '('+computer.anlagenName+')'  : ''}"
+                              class="textKlein"> </span>
+                    </td>
+                    <td class="colXSmall " th:utext="${computer.computerName}"></td>
+                    <td th:utext="${computer.hostname}"></td>
+                    <td class="colXSmall " th:utext="${computer.betriebsSystem}"></td>
+                    <td class="colXSmall " th:utext="${computer.betriebssystemVersion}"></td>
+                    <td class="colXSmall " th:utext="${computer.servicePack}"></td>
+                    <td class="colXSmall" th:if="${computer.lastModified != null}"
+                        th:text="${#temporals.format(computer.lastModified, 'dd.MM.yyyy')}"></td>
+                    <td class="colXSmall" th:unless="${computer.lastModified != null}">N/A</td>
+
+                    <td class="colXSmall text-center"  nowrap="nowrap">
+                        <a th:href="@{'/getComputer/' + ${computer.anlagenNr}}" data-toggle="tooltip" data-placement="top"
+                           title="zur ComputerInformation">
+                            <i class="fas fa-desktop fa-2x"></i></a>
+                    </td>
+                </tr>
+            </table>
+            <div th:insert="~{fragments/pagination(url='alleComputer')}"></div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+</body>
+</html>

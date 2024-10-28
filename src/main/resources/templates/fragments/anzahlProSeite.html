@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Anzahl Pro Seite</title>
+</head>
+<body>
+<form th:fragment="anzahlProSeite">
+    <div class="d-flex align-items-center">
+        <span class="nav-item me-1">Treffer pro Seite: </span>
+        <div class="dropdown me-1">
+            <select id="anzahlProSeite" name="anzahlProSeite">
+                <option class="dropdown-item" th:value="30" th:text="30" th:selected="${anzahlProSeite} == '30'"></option>
+                <option class="dropdown-item" th:value="50" th:text="50" th:selected="${anzahlProSeite} == '50'"></option>
+                <option class="dropdown-item" th:value="100" th:text="100" th:selected="${anzahlProSeite} == '100'"></option>
+                <option class="dropdown-item" th:value="200" th:text="200" th:selected="${anzahlProSeite} == '200'"></option>
+            </select>
+        </div>
+        <input type="hidden" name="seite" th:value="${seite}"/>
+        <input type="hidden" name="suchBegriff" th:value="${suchBegriff}"/>
+        <input type="hidden" name="sortierenNach" th:value="${sortierenNach}"/>
+        <input type="hidden" name="sortierReihenfolge" th:value="${sortierReihenfolge}"/>
+        <button type="submit" class="btn btn-custom"><i class="fa fa-sync"></i></button>
+    </div>
+</form>
+</body>
+</html>

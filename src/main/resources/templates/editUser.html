@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content">
+    <div class="container">
+        <div class="login-container shadow">
+            <div class="login-header">
+                Benutzer bearbeiten / Neuer Benutzer anlegen
+            </div>
+            <div class="login-body">
+                <div class="alert alert-warning" th:if="${benutzer.userId == null}">
+                    Neuer Benutzer bekommt erst User-Rechte!
+                </div>
+
+                <form th:action="@{/addUser}" method="POST" >
+                    <input type="hidden" name="userId" th:value="${benutzer.userId}"/>
+                    <!-- General error message -->
+                    <div th:if="${error}" class="alert alert-danger">
+                        <p th:text="${error}">Falsche Eingaben.</p>
+                    </div>
+
+                    <!-- Input for 'Name' without th:object -->
+                    <div class="mb-3">
+                        <label for="inputname" class="form-label">Name:</label>
+                        <div th:if="${#fields.hasErrors('benutzer.name')}" class="text-danger">
+                            <p th:errors="*{benutzer.name}"></p>
+                        </div>
+                        <input type="text" id="inputname" name="name" class="form-control"
+                               placeholder="Name" th:value="${benutzer.name}" required="required">
+                    </div>
+
+                    <!-- Input for 'Benutzername' without th:object -->
+                    <div class="mb-3">
+                        <label for="inputusername" class="form-label">Benutzername:</label>
+                        <div th:if="${#fields.hasErrors('benutzer.username')}" class="text-danger">
+                            <p th:errors="*{benutzer.username}"></p>
+                        </div>
+                        <input type="text" id="inputusername" name="username" class="form-control"
+                               placeholder="Benutzername" th:value="${benutzer.username}" required="required">
+                    </div>
+
+                    <!-- Input for 'E-Mail' without th:object -->
+                    <div class="mb-3">
+                        <label for="inputemail" class="form-label">E-Mail:</label>
+                        <div th:if="${#fields.hasErrors('benutzer.email')}" class="text-danger">
+                            <p th:errors="*{benutzer.email}"></p>
+                        </div>
+                        <input type="text" id="inputemail" name="email" class="form-control"
+                               placeholder="E-Mail" th:value="${benutzer.email}" required="required">
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-custom">Speichern</button>
+                        <a th:href="@{'/confirmDelete/' + ${benutzer.userId}}" class="btn btn-danger">
+                            Löschen
+                        </a>
+                        <button type="reset" class="btn btn-secondary">Abbrechen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+</body>
+</html>

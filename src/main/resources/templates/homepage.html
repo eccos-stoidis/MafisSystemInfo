@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<!-- Navbar -->
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<!-- Main Content -->
+<div id="content">
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12 ">
+                <div class="card align">
+                    <div class="login-header">
+                        <h5 class="card-title">Mafis Kunden technische Information</h5>
+                    </div>
+                    <div class="login-body">
+                        <p>Willkommen auf Mafis Kunden technische Information von eccos pro gmbh!</p>
+                        <p>Sie können hier alle technische Informationen von Mafis sowie Informationen über Computer von Kunden nachschauen!</p>
+                        <p>Alle Informationen werden nach dem Tagesabschluss aktualisiert!</p>
+                        <p>Sie haben auch die Möglichkeit, Ihr eigenes Kennwort zu ändern.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer -->
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+</body>
+</html>

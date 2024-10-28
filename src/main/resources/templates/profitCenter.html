@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<head>
+  <title>Profitcenter</title>
+</head>
+<body>
+<div th:fragment="profitcenter(profitCenter)">
+  <table class="table table-bordered table-hover table-sm">
+    <thead class="table-secondary">
+    <tr>
+      <th class="col-2">Nr.</th>
+      <th>Beschreibung</th>
+      <th>Zugehöriger Profitcenter</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${profitCenter}">
+      <td th:text="${item.profitcenterNr}" class="col-2"></td>
+      <td th:text="${item.profitcenterName}"></td>
+      <td th:text="${item.zugProfitcenter}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

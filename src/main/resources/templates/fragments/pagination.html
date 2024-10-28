@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagination</title>
+</head>
+<body>
+<div th:fragment="pagination (url)" class="pagination mt-2" th:if="${seitenAnzahl > 0}">
+    Seite [[${seitenNummer}]] von [[${seitenAnzahl}]]
+    &nbsp; &nbsp; - &nbsp;
+    <span th:each="i: ${#numbers.sequence(1, seitenAnzahl)}">
+            <a th:href="@{/{url}(url=${url},seite=${i},suchBegriff=${suchBegriff},anzahlProSeite=${anzahlProSeite},sortierenNach=${sortierenNach},sortierReihenfolge=${sortierReihenfolge})}" th:if="${i == seitenNummer}" style="color: #4D4E52"><b>[[${i}]]</b></a>
+            <a th:href="@{/{url}(url=${url},seite=${i},suchBegriff=${suchBegriff},anzahlProSeite=${anzahlProSeite},sortierenNach=${sortierenNach},sortierReihenfolge=${sortierReihenfolge})}" th:unless="${i == seitenNummer}">[[${i}]]</a>
+            &nbsp; &nbsp;
+        </span>
+</div>
+&nbsp;
+</body>
+</html>

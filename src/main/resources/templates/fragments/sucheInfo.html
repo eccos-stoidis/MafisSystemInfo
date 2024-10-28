@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Suche</title>
+</head>
+<body>
+<form class="d-flex input-group w-auto" th:fragment="suche" th:action="@{/alleInformationen}">
+    <input type="hidden" name="seite" th:value="${seite}"/>
+    <input type="hidden" name="anzahlProSeite" th:value="${anzahlProSeite}"/>
+    <input type="hidden" name="sortierenNach" th:value="${sortierenNach}"/>
+    <input type="hidden" name="sortierReihenfolge" th:value="${sortierReihenfolge}"/>
+    <input class="form-control rounded" id="suchBegriff" name="suchBegriff" placeholder="Suchbegriff wie Mafis-Version">
+    <button type="submit" class="btn btn-custom" title="Suchen" > <i class="fa fa-search"></i> </button>
+</form>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <title tiles:fragment="title">Mafis InforSystem</title>
+</head>
+<body>
+<div th:if="${#authentication?.isAuthenticated()}">
+    <div th:with="currentUser=${#authentication.name}">
+
+        <!-- Hamburger Menu Trigger -->
+        <div class="menu-trigger d-lg-none" th:fragment="navigation">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <!-- Hamburger Menu -->
+        <nav id="slide-menu" class="d-lg-none" th:fragment="navigation">
+            <ul>
+                <li><a class="nav-link" th:href="@{/alleAnlagen}"><i class="fas fa-hotel"></i> Anlagen</a></li>
+                <li><a class="nav-link" th:href="@{/alleInformationen}"><i class="fas fa-info-circle"></i> System Infos</a></li>
+                <li><a class="nav-link" th:href="@{/alleComputer}"> <i class="fas fa-desktop"></i> Computer Infos</a></li>
+                <li><a class="nav-link" th:href="@{/alleFiskal}"><i class="fas fa-list-alt"></i> Fiskal-Bericht</a></li>
+                <li><a class="nav-link" th:href="@{/editKennwort}"><i class="fa fa-key"></i> Kennwort &auml;ndern</a></li>
+                <li th:if="${T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}">
+                    <a class="nav-link" th:href="@{/alleUser}"><i class="fas fa-users"></i> Verwaltung</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Regular Navbar for larger screens -->
+        <nav class="navbar navbar-expand-lg d-none d-lg-block" id="thenav" th:fragment="navigation">
+            <ul class="navbar-nav">
+                <li class="nav-item active"><a class="nav-link" th:href="@{/alleAnlagen}"><i class="fas fa-hotel"></i> Anlagen</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/alleInformationen}"><i class="fas fa-info-circle"></i> System Infos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/alleComputer}"> <i class="fas fa-desktop"></i> Computer Infos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/alleFiskal}"><i class="fas fa-list-alt"></i> Fiskal-Bericht</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/editKennwort}"><i class="fa fa-key"></i> Kennwort &auml;ndern</a></li>
+                <li class="nav-item" th:if="${T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}">
+                    <a class="nav-link" th:href="@{/alleUser}"><i class="fas fa-users"></i> Verwaltung</a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+</div>
+</body>
+</html>

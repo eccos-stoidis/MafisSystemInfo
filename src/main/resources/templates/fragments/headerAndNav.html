@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title th:fragment="title">Mafis Kunden technische Information</title>
+
+    <!-- Bootstrap and Custom CSS -->
+    <link th:href="@{/webjars/bootstrap/5.3.3/dist/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <link th:href="@{/webjars/font-awesome/6.5.2/css/all.min.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="container-fluid headerNav" th:fragment="navbar">
+    <div class="row mt-3 navbar navbar-light">
+        <div class="col-12 col-lg my-3 text-left text-lg-start">
+            <a class="navbar-brand" href="https://www.eccos-pro.com">
+                <img src="/images/logo.png"  alt="Logo">
+            </a>
+        </div>
+        <div class="col-12 col-lg-2 text-left text-lg-end mt-3 mt-lg-0">
+            <div th:if="${#authentication?.isAuthenticated()}">
+                <div  th:with="currentUser=${#authentication.name}">
+                    <i class="fas fa-user" title="Angemeldeter Benutzer"></i>&nbsp;&nbsp;
+                    <span th:text="${currentUser}">example_user</span>
+                    <form action="/logout" th:action="@{/logout}" method="post" style="display:inline;">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                        <button type="submit" class="btn logout-btn" title="Abmelden">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div th:replace="~{fragments/navigation :: navigation}"></div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:fragment="footer">
+    <nav  class="footer">
+        <span class="text-muted">&copy; eccos pro gmbh. Alle Rechte vorbehalten.</span>
+    </nav>
+    <script>
+        (function() {
+var body = document.body;
+var menuTrigger = document.getElementsByClassName('menu-trigger')[0];
+
+if (menuTrigger) {
+    menuTrigger.addEventListener('click', function() {
+        body.classList.toggle('menu-active');
+    });
+}
+})();
+    </script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle.min.js}"></script>
+</div>
+
+
+<!-- Scripts -->
+<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/all.min.js}"></script>
+<script>
+    $(function () {
+        $('.example-popover').popover({
+            container: 'body'
+        });
+    });
+
+
+
+</script>
+</body>
+</html>

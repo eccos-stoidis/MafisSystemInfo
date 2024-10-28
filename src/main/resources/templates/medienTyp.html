@@ -1,0 +1,30 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<body>
+<div th:fragment="medientyp(medienTypen)">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-sm">
+            <thead class="table-secondary">
+            <tr>
+                <th>Typ-Nr.</th>
+                <th>Medientyp</th>
+                <th>Freigegeben</th>
+                <th>Barcode</th>
+                <th>Barcode Verkauf</th>
+                <th>Prefix</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${medienTypen}">
+                <td th:text="${item.typNr}"></td>
+                <td th:text="${item.medienTyp}"></td>
+                <td th:text="${item.freigegeben ? 'JA' : 'Nein'}"></td>
+                <td th:text="${item.barcode ? 'JA' : 'Nein'}"></td>
+                <td th:text="${item.barcodeVerkauf ? 'JA' : 'Nein'}"></td>
+                <td th:text="${item.prefix}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

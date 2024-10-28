@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabellenkopf</title>
+</head>
+<body>
+<th nowrap="nowrap" th:fragment="tabellenkopf (spaltenName, sortierenNach, url)"> [[${spaltenName}]]
+    <a th:href="@{/{url}(url=${url},seite=${seitenNummer},sortierenNach=${sortierenNach},sortierReihenfolge='DESC',anzahlProSeite=${anzahlProSeite},suchBegriff=${suchBegriff})}" th:if="${#strings.equalsIgnoreCase(sortierReihenfolge,'ASC')}" title="sortieren"><i class="fa fa-sort"></i> </a>
+    <a th:href="@{/{url}(url=${url},seite=${seitenNummer},sortierenNach=${sortierenNach},sortierReihenfolge='ASC',anzahlProSeite=${anzahlProSeite},suchBegriff=${suchBegriff})}" th:unless="${#strings.equalsIgnoreCase(sortierReihenfolge,'ASC')}" title="sortieren"><i class="fa fa-sort"></i> </a>
+</th>
+</body>
+</html>

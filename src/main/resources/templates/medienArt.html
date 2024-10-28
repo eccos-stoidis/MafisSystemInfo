@@ -1,0 +1,28 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<body>
+<div th:fragment="medienart(medienArten)">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-sm">
+            <thead class="table-secondary">
+            <tr>
+                <th>Typ-Nr.</th>
+                <th>Bezeichnung</th>
+                <th>Einwegmedien</th>
+                <th>Kassierbar</th>
+                <th>SperrungTA</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${medienArten}">
+                <td th:text="${item.typNr}"></td>
+                <td th:text="${item.medienBezeichnung}"></td>
+                <td th:text="${item.einweg ? 'JA' : 'Nein'}"></td>
+                <td th:text="${item.kassierbar ? 'JA' : 'Nein'}"></td>
+                <td th:text="${item.sperrungTA ? 'JA' : 'Nein'}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

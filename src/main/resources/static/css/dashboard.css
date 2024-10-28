@@ -1,0 +1,284 @@
+ .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+        }
+        .login-header {
+            background-color: #fecb01;
+            padding: 15px;
+            text-align: center;
+            color: black;
+            font-size: 1.5rem;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .login-body {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+        }
+        .btn-custom {
+            background-color: #fecb01;
+            color: black;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #b38f00;
+            color: white;
+        }
+         .navbar {
+            background-color: #e2e3e5;
+        }
+         .navbar-brand img {
+            max-width: 150px;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #ffc107 !important; /* Change border color */
+            box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important; /* Custom shadow with your color */
+            outline: none; /* Remove default outline */
+        }
+
+        .nav-link{
+            color: #343a40;
+        }
+
+        .nav-link:hover{
+            background-color: #fecb01;
+            color: #343a40;
+        }
+        .nav-item:hover{
+            color: #343a40;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #fecb01;
+        }
+
+        .nav-tabs {
+            background-color: #e2e3e5
+        }
+
+        .footer {
+
+             display: flex;
+             justify-content: center; /* Center horizontally */
+             align-items: center; /* Center vertically */
+             padding: 10px;
+             background-color: #f8f9fa;
+             width: 100%;
+             position: fixed;
+             bottom: 0;
+        }
+
+        .row{
+           margin-top: 4px;
+           margin-left: 2px;
+        }
+
+         .headerNav{
+         	background-color: #e2e3e5;
+         	margin-left: -2px;
+         	padding-top: 5px;
+         }
+
+         .container-fluid{
+            width:100%;
+         }
+         .align{
+            text-align:center;
+         }
+
+         .navbar-nav {
+             position: relative;
+         }
+
+          .navbar-nav li > a {
+             color: #343a40;
+          }
+
+         .navbar-nav li > a:hover {
+             color: #fff;
+         }
+
+         .nav-item .navbar-nav > .active{
+             color: #000;
+             background: #d65c14;
+         }
+
+         .logout-btn {
+             background-color: #fecb01;
+             border: none; /* Remove border if needed */
+             border-radius: 4px; /* Optional: rounded corners */
+             cursor: pointer; /* Show pointer on hover */
+         }
+
+         .logout-btn:hover {
+             background-color: #e6b800;
+         }
+
+         .colSmall{
+             width: 200px;
+         }
+
+         .colXSmall{
+             width: 100px;
+         }
+
+         .colBig{
+             width: 450px;
+         }
+
+         .textKlein  {
+             font-size: small;
+             color: #9C9E9F;
+         }
+
+         a{
+            color: #fecb01;
+            font-weight: bold;
+            text-decoration: none;
+         }
+
+         a:hover {
+            color: #b38f00;
+            text-decoration: none;
+
+         }
+
+        .status-aktiv {
+            background-color: #d4edda !important; /* Light green background */
+            color: #155724 !important; /* Dark green text */
+            border-radius: 50px; /* Circle/oval border */
+            padding: 0.2em 0.6em; /* Padding only for the text */
+            display: inline-block; /* Make the background fit the content */
+        }
+
+        .status-deaktiv {
+            background-color: #f8d7da !important; /* Light red background */
+            color: #721c24 !important; /* Dark red text */
+            border-radius: 50px; /* Circle/oval border */
+            padding: 0.2em 0.6em; /* Padding only for the text */
+            display: inline-block; /* Make the background fit the content */
+        }
+
+      .table tbody tr.row-aktiv {
+          --bs-table-bg: #dbf0e0 !important; /* Override Bootstrap's default table background with light green */
+          color: #155724 !important; /* Dark green text */
+      }
+
+      /* Ensure the background color is applied and not overridden */
+      .table tbody tr.row-deaktiv {
+          --bs-table-bg: #fbe9eb !important; /* Override Bootstrap's default table background with light red */
+          color: #721c24 !important; /* Dark red text */
+      }
+
+      /* Prevent hover color from overriding */
+      .table tbody tr.row-aktiv:hover,
+      .table tbody tr.row-deaktiv:hover {
+          background-color: inherit !important; /* Keep the same background color on hover */
+      }
+
+
+
+         /* General adjustments */
+         @media (max-width: 1000px) {
+             #slide-menu {
+                 position: fixed;
+                 top: 225px;
+                 left: -250px;
+                 bottom: 0;
+                 width: 250px;
+                 background: #C3C3C3;
+                 width: 100%;
+                 max-width: 200px;
+                 height: 100%;
+                 transition: all 0.3s ease;
+                 z-index: 1000; /* Ensures it sits above content */
+
+             }
+
+             #slide-menu ul {
+                 padding: 20px;
+                 list-style: none;
+                 margin: 0;
+             }
+
+             #slide-menu ul li {
+                 padding: 15px 0;
+                 border-bottom: 1px solid #bbb;
+             }
+
+             #slide-menu ul li a {
+                 color: black;
+                 text-decoration: none;
+                 font-size: 18px;
+             }
+
+             #slide-menu ul li a:hover {
+                 color: #fff;
+             }
+
+             body.menu-active #slide-menu {
+                 left: 0;
+             }
+
+             .menu-trigger {
+                 width: 40px;
+                 height: 40px;
+                  background-color: #fecb01;
+                 cursor: pointer;
+                 border-radius: 5px;
+                 z-index: 1001;
+                 display: flex;
+                 justify-content: center;
+                  align-items: center;
+             }
+
+
+             .menu-trigger:hover {
+                 background-color: #e6b800; /* Background color on hover */
+             }
+
+
+            body.menu-active .menu-trigger {
+                 left: 260px;
+             }
+
+             /* Hide regular navbar on smaller screens */
+             nav#thenav {
+                 display: none;
+             }
+
+               .customers-list td, .customers-list th {
+                     font-size: 0.70rem; /* Slightly smaller font */
+                     padding: 0.3rem; /* Reduce padding to fit content */
+                 }
+
+                 /* Stack table rows into blocks for small screens */
+                 .table-responsive {
+                     overflow-x: auto;
+                     -webkit-overflow-scrolling: touch;
+                 }
+
+                 /* Ensure no scrolling for table */
+                 table {
+                     width: 100%;
+                 }
+
+                 /* Optional: make icons slightly smaller for smaller screens */
+                 .fa-2x {
+                     font-size: 1.5em; /* Reduce the size of icons */
+                 }
+
+                 /* Hide large buttons text for smaller screens */
+                 .btn-custom {
+                     font-size: 0.85rem; /* Smaller button text */
+                 }
+         }
+
+         /* Content shift when menu is active */
+         body.menu-active #content {
+             transform: translateX(250px);
+             transition: transform 0.3s ease;
+         }
+

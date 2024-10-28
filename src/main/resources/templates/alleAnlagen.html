@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content" style="padding-bottom: 60px">
+    <div class="container-fluid ">
+        <div class="row align-items-baseline gy-3 mb-3">
+            <div class="col-12 col-sm-4 col-lg-1">
+                <span class="h4">Anlagen</span>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-2">
+                <span>Anzahl Treffer: [[${elementeAnzahl}]] </span>
+            </div>
+            <div class="col-12 col-sm-4 col-lg-2">
+                <form th:replace="~{fragments/suche}"></form>
+            </div>
+            <div class="col-12 col-sm-4 col-lg-3">
+                <form th:replace="~{fragments/anzahlProSeite}"></form>
+            </div>
+            <div class="col-12 col-sm-3">
+                <a  target="_blank" class="btn btn-custom align-self-center  "
+                    th:href="@{/exportKundeninformationen}" > <i class="fas fa-download"></i>  Export alle Kunden </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table  table-bordered table-hover table-sm customers-list" id="table">
+                <thead class="table-secondary">
+                <tr>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Anlagen Nr.', sortierenNach='anlagenNr', url='alleAnlagen')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Anlagenname', sortierenNach='anlagenName', url='alleAnlagen')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Ort', sortierenNach='ort', url='alleAnlagen')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Mafisversion', sortierenNach='mafisVersion', url='alleAnlagen')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='aktualisiert am', sortierenNach='system.lastModified', url='alleAnlagen')}"></th>
+                    <th th:replace="~{fragments/tabellenkopf (spaltenName='Testbetrieb', sortierenNach='testBetrieb', url='alleAnlagen')}"></th>
+                    <th>SystemInfo</th>
+                    <th>ComputerInfo</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(anlagen)}">
+                    <td colspan="8" class="text-center">No results found.</td>
+                </tr>
+                </tbody>
+                <tbody>
+                <tr th:each="anlage : ${anlagen}"
+                    th:classappend="${T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin() ? (anlage.status ? 'row-aktiv' : 'row-deaktiv') : ''}">
+                    <td class="colXSmall " th:utext="${anlage.anlagenNr}"></td>
+                    <td class="colBig" th:utext="${anlage.anlagenName}" nowrap="nowrap"></td>
+                    <td th:utext="${anlage.ort}" nowrap="nowrap"></td>
+                    <td class="colXSmall" th:utext="${anlage.mafisVersion}" nowrap="nowrap"></td>
+                    <td class="colXSmall" th:text="${#temporals.format(anlage.system.lastModified, 'dd.MM.yyyy')}"></td>
+                    <td class="colXSmall" >
+                        <div th:if="${anlage.testBetrieb == null }"></div>
+                        <div th:if="${anlage.testBetrieb != null }">
+                            <span th:text="${anlage.testBetrieb? 'JA' : 'Nein'}"></span>
+                        </div>
+
+                    </td>
+                    <td class="colXSmall text-center"  nowrap="nowrap">
+                        <a  th:href="@{'/getSystemInfo/' + ${anlage.anlagenId}}" data-toggle="tooltip"
+                           data-placement="top"
+                           title="zur SystemInformation"> SystemInfo
+                            <i class="fas fa-info-circle fa-2x"></i></a>
+                    </td>
+                    <td class="colXSmall text-center" nowrap="nowrap">
+                        <a  th:href="@{'/getComputer/' + ${anlage.anlagenNr}}" data-toggle="tooltip" data-placement="top"
+                           title="zur ComputerInformation"> CompInfo
+                            <!--img src="/images/pc.png" class="img-responsive" alt="Responsives Bild" -->
+                            <i class="fas fa-desktop fa-2x"></i>
+                        </a>
+                    </td>
+                    <td class="colSmall" th:if="${T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}">
+                        <a th:href="@{'/changeStatus/' + ${anlage.anlagenNr} + '/' +${!anlage.status}}"
+                           data-toggle="tooltip" data-placement="top">
+                            <span th:text="${anlage.status ? 'Deaktivieren' : 'Aktivieren'}"></span>
+                        </a>
+                    </td>
+                    <td class="colSmall" th:if="${! T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}"
+                        title="${anlage.status? 'Aktiv' : 'Deaktiv'}">
+
+                        <span th:utext="${anlage.status? 'Aktiv' : 'Deaktiv'}"
+                              th:classappend="${anlage.status} ? 'status-aktiv' : 'status-deaktiv'">
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:insert="~{fragments/pagination(url='alleAnlagen')}"></div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<head>
+    <title>Betriebe</title>
+</head>
+<body>
+<div th:fragment="betrieb(betriebe)">
+    <table class="table table-bordered table-hover table-sm">
+        <thead class="table-secondary">
+        <tr>
+            <th class="col-2">Nr.</th>
+            <th>Name</th>
+            <th>Beschreibung</th>
+            <th>Zentrale</th>
+            <th>Eigenständige</th>
+            <th>Zugehöriger Betrieb</th>
+            <th>Umsatzsteuerl. Organschaft</th>
+            <th>Mutterbetrieb</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${betriebe}">
+            <td th:text="${item.betriebNr}"></td>
+            <td th:text="${item.betriebName}"></td>
+            <td th:text="${item.beschreibung}" class="col-4"></td>
+            <td th:text="${item.zentrale ? 'JA' : 'Nein'}" class="text-center"></td>
+            <td th:text="${item.eigenstaendig ? 'JA' : 'Nein'}" class="text-center"></td>
+            <td th:text="${item.zugBetrieb}"></td>
+            <td th:text="${item.ustOrganschaft ? 'JA' : 'Nein'}" class="text-center"></td>
+            <td th:text="${item.mutterBetrieb ? 'JA' : 'Nein'}" class="text-center"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
