@@ -75,7 +75,7 @@ public class SystemInfoController extends TabellenController {
     private String directory;
 
     /**
-     * Fetches a list of all system information with optional search and pagination.
+     * Fetches a list of all system information with optional search.js and pagination.
      *
      * @param model
      * @param seite
@@ -191,7 +191,7 @@ public class SystemInfoController extends TabellenController {
      * @return
      */
     @GetMapping("/sucheSystem")
-    public String search(@RequestParam(value = "search", required = false) String q, Model model) {
+    public String search(@RequestParam(value = "search.js", required = false) String q, Model model) {
         try {
             List<SystemInfo> infos;
             if (q != null && !q.trim().isEmpty()) {
@@ -297,39 +297,13 @@ public class SystemInfoController extends TabellenController {
      * Fetches all Fiskal entries and adds them to the model.
      */
     @GetMapping("/alleFiskal")
-    public String alleFiskal(Model model,
-                             @RequestParam(required = false) Optional<Integer> seite,
-                             @RequestParam(required = false) Optional<String> sortierenNach,
-                             @RequestParam(required = false) Optional<String> sortierReihenfolge,
-                             @RequestParam(required = false) Optional<String> anzahlProSeite) {
+    public String alleFiskal(Model model) {
         try {
-            // Set up pagination variables
-            int currentPage = seite.orElse(1);
-            int pageSize = Integer.parseInt(anzahlProSeite.orElse("30"));
 
             // Retrieve all fiskal records and apply manual pagination
             List<FiskalDto> allFiskal = fiskalService.listeFiskal();
 
-            // Sort the list if sorting parameters are provided
-            allFiskal.sort((f1, f2) -> {
-                if (sortierenNach.isPresent()) {
-                    // Implement sorting logic based on `sortierenNach` and `sortierReihenfolge`
-                    // Here, for example, we assume sorting by fiskalName
-                    int direction = sortierReihenfolge.orElse("DESC").equalsIgnoreCase("DESC") ? -1 : 1;
-                    return direction * f1.getAnlagenName().compareToIgnoreCase(f2.getAnlagenName());
-                }
-                return 0;
-            });
-
-            // Apply pagination to the sorted list
-            int start = (currentPage - 1) * pageSize;
-            int end = Math.min(start + pageSize, allFiskal.size());
-            List<FiskalDto> paginatedFiskal = allFiskal.subList(start, end);
-
-            // Update the model with pagination data
-            int totalPages = (int) Math.ceil((double) allFiskal.size() / pageSize);
-            model = aktualisiereModel(model, currentPage, sortierReihenfolge.orElse("DESC"), String.valueOf(pageSize), sortierenNach.orElse(""), "", totalPages, allFiskal.size());
-            model.addAttribute("fiskal", paginatedFiskal);
+            model.addAttribute("fiskal", allFiskal);
         } catch (Exception e) {
             logger.error("Fehler in alleFiskal: {}", e.getMessage(), e);
             model.addAttribute("ERROR", e.getMessage());

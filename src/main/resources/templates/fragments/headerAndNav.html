@@ -42,13 +42,56 @@
     <div class="row">
         <div th:replace="~{fragments/navigation :: navigation}"></div>
     </div>
+    <!-- Berichte Modal -->
+    <div class="modal fade" id="berichteModal" tabindex="-1" aria-labelledby="berichteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="berichteModalLabel">Search Berichte</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="berichteForm">
+                        <div class="mb-3">
+                            <label for="searchType" class="form-label">Search Anlagen by</label>
+                            <select class="form-select" id="searchType" name="searchType">
+                                <option value="">Select an option</option>
+                                <option value="betriebe">Betriebe</option>
+                                <option value="profitcenter">Profitcenter</option>-->
+                                <option value="module">Module</option>
+                                <option value="kassen">Kassen</option>
+                                <option value="automaten">Automaten</option>
+                                <option value="schnittstellen">Schnittstellen</option>
+                                <option value="zutritts">Zutritts</option>
+                                <option value="medienarten">MedienArten</option>
+<!--                                <option value="medientypen">MedienTypen</option>-->
+                                <option value="fiskaldaten">FiskalDaten</option>
+                            </select>
+                        </div>
+                        <div id="additionalFilters" class="d-none">
+                            <!-- Additional filter options will appear here -->
+                        </div>
+                        <button type="button" class="btn btn-custom mt-3" onclick="applySearch()">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Footer -->
+
 <div th:fragment="footer">
     <nav  class="footer">
         <span class="text-muted">&copy; eccos pro gmbh. Alle Rechte vorbehalten.</span>
     </nav>
+    <script th:src="@{/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        $(function () {
+            $('.example-popover').popover({
+                container: 'body'
+            });
+        });
+    </script>
     <script>
         (function() {
 var body = document.body;
@@ -61,23 +104,10 @@ if (menuTrigger) {
 }
 })();
     </script>
-    <script th:src="@{/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/search.js}"></script>
+    <script th:src="@{/js/sucheBerichte.js}"></script>
+
+
 </div>
-
-
-<!-- Scripts -->
-<script th:src="@{/js/jquery-3.3.1.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/js/all.min.js}"></script>
-<script>
-    $(function () {
-        $('.example-popover').popover({
-            container: 'body'
-        });
-    });
-
-
-
-</script>
 </body>
 </html>
