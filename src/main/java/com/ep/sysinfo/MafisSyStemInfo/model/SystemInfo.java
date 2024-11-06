@@ -22,6 +22,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  * SystemInfo entity class with Lombok annotations
@@ -62,6 +64,7 @@ public class SystemInfo implements Serializable {
     private List<Zutritt> zutritts;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT) // Load all `betriebe` in a single subselect query
     private Collection<Betrieb> betriebe;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)

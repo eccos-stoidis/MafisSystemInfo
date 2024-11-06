@@ -118,9 +118,9 @@ public class BenutzerServiceImpl implements BenutzerService {
 
     @Override
     /**
-     * Search for users based on a search pattern and enabled status
+     * Search for users based on a search.js pattern and enabled status
      *
-     * @param searchPattern The search term to filter by name, username, or email
+     * @param searchPattern The search.js term to filter by name, username, or email
      * @param enabled       The enabled status ("J" for active users)
      * @return List of matching Benutzer objects
      */
@@ -128,7 +128,7 @@ public class BenutzerServiceImpl implements BenutzerService {
         // Fetch all users with the given enabled status
         List<Benutzer> users = benutzerRepository.findByEnabled(enabled);
 
-        // If there is a search pattern, filter the users by name, username, or email
+        // If there is a search.js pattern, filter the users by name, username, or email
         if (searchPattern != null && !searchPattern.isBlank()) {
             String lowerCasePattern = searchPattern.trim().toLowerCase();
 
@@ -146,7 +146,7 @@ public class BenutzerServiceImpl implements BenutzerService {
                     .collect(Collectors.toList());
 
         }
-        // If no search pattern, return all users
+        // If no search.js pattern, return all users
         return users;
     }
 }

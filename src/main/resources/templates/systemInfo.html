@@ -2,365 +2,366 @@
 <head th:replace="~{fragments/headerAndNav :: header}"></head>
 <body>
 <div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+<div id="content" style="padding-bottom: 60px">
+    <div class="container-fluid">
 
-<div class="container-fluid">
+        <div class="row mt-2">
+            <h4>
+                <span th:text=" ${info.anlage.anlagenName + '  Anlagen Nr. ' + info.anlage.anlagenNr}"></span>
+                <a class="btn" th:href="@{'/getComputer/' + ${info.anlage.anlagenNr}}" data-bs-toggle="tooltip"
+                   title="zur SystemInformation">
+                    <i class="fas fa-desktop fa-2x" style="color: #fecb01"></i>
+                </a>
+            </h4>
+        </div>
 
-    <div class="row mt-2">
-        <h4>
-            <span th:text=" ${info.anlage.anlagenName + '  Anlagen Nr. ' + info.anlage.anlagenNr}"></span>
-            <a class="btn" th:href="@{'/getComputer/' + ${info.anlage.anlagenNr}}" data-bs-toggle="tooltip"
-               title="zur SystemInformation">
-                <i class="fas fa-desktop fa-2x" style="color: #fecb01"></i>
-            </a>
-        </h4>
-    </div>
-
-    <div>
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs mb-3">
-            <li class="nav-item">
-                <a class="nav-link rounded-top active" data-bs-toggle="tab" href="#betriebe">Betriebe</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#profitCenter">Profitcenter</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#module">Module</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#updates">System Updates</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#kasse">Kassen</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#automat">Automaten</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#schnittstelle">Schnittstellen</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#automatenTyp">Automatentypen</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#zutritts">Zutritts</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#sektoren">Sektoren</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#medienarten">Medienarten</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#medientypen">Medientypen</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#fiskal">FiskalDaten</a>
-            </li>
-        </ul>
+        <div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link rounded-top active" data-bs-toggle="tab" href="#betriebe">Betriebe</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#profitCenter">Profitcenter</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#module">Module</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#updates">System Updates</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#kasse">Kassen</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#automat">Automaten</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#schnittstelle">Schnittstellen</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#automatenTyp">Automatentypen</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#zutritts">Zutritts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#sektoren">Sektoren</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#medienarten">Medienarten</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#medientypen">Medientypen</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#fiskal">FiskalDaten</a>
+                </li>
+            </ul>
 
 
-        <div class="tab-content mb-3">
-            <!-- Betriebe Tab -->
-            <div class="tab-pane active" id="betriebe">
-                <div th:replace="~{betriebe :: betrieb(${info.betriebe})}"></div>
-            </div>
-
-            <!-- Profitcenter Tab -->
-            <div class="tab-pane" id="profitCenter">
-                <div th:replace="~{profitCenter :: profitcenter(${info.profitCenter})}"></div>
-            </div>
-
-            <!-- Module Tab -->
-            <div class="tab-pane" id="module">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm">
-                        <thead class="table-secondary">
-                        <tr>
-                            <th>Modul-ID</th>
-                            <th>Modultyp</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="modul : ${info.module}">
-                            <td th:text="${modul.modulId}"></td>
-                            <td th:text="${modul.modulTyp}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div class="tab-content mb-3">
+                <!-- Betriebe Tab -->
+                <div class="tab-pane active" id="betriebe">
+                    <div th:replace="~{betriebe :: betrieb(${info.betriebe})}"></div>
                 </div>
-            </div>
 
-            <!-- Updates Tab -->
-            <div class="tab-pane" id="updates">
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table table-borderless">
+                <!-- Profitcenter Tab -->
+                <div class="tab-pane" id="profitCenter">
+                    <div th:replace="~{profitCenter :: profitcenter(${info.profitCenter})}"></div>
+                </div>
+
+                <!-- Module Tab -->
+                <div class="tab-pane" id="module">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead class="table-secondary">
                             <tr>
-                                <th>Aktiv:</th>
-                                <td th:text="${info.updates.aktiv ? 'Ja' : 'Nein'}"></td>
+                                <th>Modul-ID</th>
+                                <th>Modultyp</th>
                             </tr>
-                            <tr>
-                                <th>Automatische Update:</th>
-                                <td th:text="${info.updates.autoUpdate ? 'Ja' : 'Nein'}"></td>
+                            </thead>
+                            <tbody>
+                            <tr th:each="modul : ${info.module}">
+                                <td th:text="${modul.modulId}"></td>
+                                <td th:text="${modul.modulTyp}"></td>
                             </tr>
-                            <tr>
-                                <th>FTP-Server:</th>
-                                <td th:text="${info.updates.ftpServer}"></td>
-                            </tr>
-                            <tr>
-                                <th>Proxy:</th>
-                                <td th:text="${info.updates.proxy}"></td>
-                            </tr>
-                            <tr>
-                                <th>Uhrzeit von:</th>
-                                <td th:text="${#temporals.format(info.updates.uhrzeitVon, 'HH:mm')}"></td>
-                            </tr>
-                            <tr>
-                                <th>Uhrzeit bis:</th>
-                                <td th:text="${#temporals.format(info.updates.uhrzeitBis, 'HH:mm')}"></td>
-                            </tr>
-                            <tr>
-                                <th>Update-Tage:</th>
-                                <td>
-                                    <span th:text="${info.updates.montag ? 'Mo.' : ''}"></span>
-                                    <span th:text="${info.updates.diesntag ? 'Di.' : ''}"></span>
-                                    <span th:text="${info.updates.mittwoch ? 'Mi.' : ''}"></span>
-                                    <span th:text="${info.updates.donnerstag ? 'Do.' : ''}"></span>
-                                    <span th:text="${info.updates.freitag ? 'Fr.' : ''}"></span>
-                                    <span th:text="${info.updates.samstag ? 'Sa.' : ''}"></span>
-                                    <span th:text="${info.updates.sonntag ? 'So.' : ''}"></span>
-                                </td>
-                            </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- Kassen Tab -->
-            <div class="tab-pane " id="kasse">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm">
-                        <thead class="table-secondary">
-                        <tr>
-                            <th nowrap="nowrap">Arbeitsplatz-ID</th>
-                            <th nowrap="nowrap">Kassen Nr.</th>
-                            <th>Bezeichnung</th>
-                            <th>Typ</th>
-                            <th>IP-Adresse</th>
-                            <th>Profitcenter</th>
-                            <th>Eingang</th>
-                            <th>Ausgang</th>
-                            <th>Hauptkasse</th>
-                            <th nowrap="nowrap">Ausgang Aktivierbar</th>
-                            <th nowrap="nowrap">Ext. Verkauf</th>
-                            <th nowrap="nowrap">Int. Verkauf</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="kasse : ${info.kassen}">
-                            <td class="colXSmall"><span th:text="${kasse.arbeitsplatzId}"></span></td>
-                            <td class="colXSmall"><span th:text="${kasse.kassenNr}"></span></td>
-                            <td><span th:text="${kasse.bezeichnung}"></span></td>
-                            <td><span th:text="${kasse.typ}"></span></td>
-                            <td><span th:text="${kasse.ip}"></span></td>
-                            <td><span th:text="${kasse.profitCenter}"></span></td>
-                            <td><span th:text="${kasse.eingang}"></span></td>
-                            <td><span th:text="${kasse.ausgang}"></span></td>
-                            <td class="colXSmall"><span th:text="${kasse.hauptKasse ? 'Ja' : 'Nein'}"></span></td>
-                            <td class="colXSmall"><span th:text="${kasse.ausgangAktivierbar ? 'Ja' : 'Nein'}"></span></td>
-                            <td class="colXSmall">
-                                <div th:if="${kasse.externVerkauf != null}">
-                                    <span th:text="${kasse.externVerkauf ? 'Ja' : 'Nein'}"></span>
-                                </div>
-                                <div th:if="${kasse.externVerkauf == null}"></div>
-                            </td>
-                            <td class="colXSmall">
-                                <div th:if="${kasse.internVerkauf != null}">
-                                    <span th:text="${kasse.internVerkauf ? 'Ja' : 'Nein'}"></span>
-                                </div>
-                                <div th:if="${kasse.internVerkauf == null}"></div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <!-- Updates Tab -->
+                <div class="tab-pane" id="updates">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th>Aktiv:</th>
+                                    <td th:text="${info.updates.aktiv ? 'Ja' : 'Nein'}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Automatische Update:</th>
+                                    <td th:text="${info.updates.autoUpdate ? 'Ja' : 'Nein'}"></td>
+                                </tr>
+                                <tr>
+                                    <th>FTP-Server:</th>
+                                    <td th:text="${info.updates.ftpServer}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Proxy:</th>
+                                    <td th:text="${info.updates.proxy}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Uhrzeit von:</th>
+                                    <td th:text="${#temporals.format(info.updates.uhrzeitVon, 'HH:mm')}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Uhrzeit bis:</th>
+                                    <td th:text="${#temporals.format(info.updates.uhrzeitBis, 'HH:mm')}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Update-Tage:</th>
+                                    <td>
+                                        <span th:text="${info.updates.montag ? 'Mo.' : ''}"></span>
+                                        <span th:text="${info.updates.diesntag ? 'Di.' : ''}"></span>
+                                        <span th:text="${info.updates.mittwoch ? 'Mi.' : ''}"></span>
+                                        <span th:text="${info.updates.donnerstag ? 'Do.' : ''}"></span>
+                                        <span th:text="${info.updates.freitag ? 'Fr.' : ''}"></span>
+                                        <span th:text="${info.updates.samstag ? 'Sa.' : ''}"></span>
+                                        <span th:text="${info.updates.sonntag ? 'So.' : ''}"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Automaten Tab -->
-            <div class="tab-pane" id="automat">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm">
-                        <thead class="table-secondary">
-                        <tr>
-                            <th>Bezeichnung</th>
-                            <th>Kassen Nr.</th>
-                            <th>Engine Version</th>
-                            <th>FCC Version</th>
-                            <th>Typ</th>
-                            <th>Untertyp</th>
-                            <th>Aktivierbar</th>
-                            <th>Treiber</th>
-                            <th>IP-Adresse</th>
-                            <th>Port</th>
-                            <th>Profitcenter</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="automat : ${info.automaten}">
-                            <td th:text="${automat.bezeichnung}"></td>
-                            <td th:text="${automat.kassenNr}"></td>
-                            <td th:text="${automat.engineVersion}"></td>
-                            <td th:text="${automat.fccVersion}"></td>
-                            <td th:text="${automat.typ}"></td>
-                            <td th:text="${automat.unterTyp}"></td>
-                            <td th:text="${automat.aktivierbar ? 'Ja' : 'Nein'}"></td>
-                            <td th:text="${automat.treiber}"></td>
-                            <td th:text="${automat.ip}"></td>
-                            <td th:text="${automat.port}"></td>
-                            <td th:text="${automat.profitcenter}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Schnittstellen Tab -->
-            <div class="tab-pane" id="schnittstelle">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm">
-                        <thead class="table-secondary">
-                        <tr>
-                            <th>ID</th>
-                            <th>Bezeichnung</th>
-                            <th>Typ</th>
-                            <th>Untertyp</th>
-                            <th>Betrieb</th>
-                            <th>Kassen Nr.</th>
-                            <th>Aktiv</th>
-                            <th>mit Typ</th>
-                            <th>Port</th>
-                            <th>SSL</th>
-                            <th>Encoding</th>
-                            <th>Kommunikation</th>
-                            <th>Protokollieren</th>
-                            <th>Http-Header</th>
-                            <th>Timeout</th>
-                            <th>Endpoint</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="st : ${info.schnittstellen}">
-                            <td th:text="${st.schnittstellenId}"></td>
-                            <td th:text="${st.bezeichnung}"></td>
-                            <td th:text="${st.typ}"></td>
-                            <td th:text="${st.unterTyp}"></td>
-                            <td th:text="${st.betrieb}"></td>
-                            <td th:text="${st.kassenNr}"></td>
-                            <td th:text="${st.aktiv ? 'JA' : 'Nein'}"></td>
-                            <td th:text="${st.mediumMitTyp == 'J' ? 'JA' : 'Nein'}"></td>
-                            <td th:text="${st.mafisPort}"></td>
-                            <td th:text="${st.sslVeschluesselung == 'J' ? 'JA' : 'Nein'}"></td>
-                            <td th:text="${st.encoding}"></td>
-                            <td th:text="${st.kommunikationstyp}"></td>
-                            <td th:text="${st.protokollierung == 'J' ? 'JA' : 'Nein'}"></td>
-                            <td th:text="${st.httpHeader == 'J' ? 'JA' : 'Nein'}"></td>
-                            <td th:text="${st.timeout}"></td>
-                            <td th:text="${st.endPoint}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Automatentypen Tab -->
-            <div class="tab-pane" id="automatenTyp">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm">
+                <!-- Kassen Tab -->
+                <div class="tab-pane " id="kasse">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
                             <thead class="table-secondary">
                             <tr>
-                                <th>Automatentyp</th>
-                                <th>Anzahl</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="at : ${info.automatenListe}">
-                                <td th:text="${at.type}"></td>
-                                <td th:text="${at.anzahl}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                </div>
-            </div>
-            <!-- Zutritts Tab -->
-            <div class="tab-pane fade" id="zutritts">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm">
-                        <thead class="table-secondary">
-                        <tr>
-                            <th>ID</th>
-                            <th>Bezeichnung</th>
-                            <th>von Sektor</th>
-                            <th>nach Sektor</th>
-                            <th>Max-Besucher</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="z : ${info.zutritts}">
-                            <td th:text="${z.zutrittId}"></td>
-                            <td th:text="${z.bezeichnung}"></td>
-                            <td th:text="${z.vonSektor}"></td>
-                            <td th:text="${z.nachSektor}"></td>
-                            <td th:text="${z.maxBesucher}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Sektoren Tab -->
-            <div class="tab-pane fade" id="sektoren">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-sm">
-                            <thead class="table-secondary">
-                            <tr>
-                                <th>Sektor-Nr</th>
+                                <th nowrap="nowrap">Arbeitsplatz-ID</th>
+                                <th nowrap="nowrap">Kassen Nr.</th>
                                 <th>Bezeichnung</th>
-                                <th>Betrieb</th>
-                                <th>Tarifpflichtig</th>
-                                <th>Zeitrelevant</th>
-                                <th>Interner Sektor</th>
-                                <th>Max. Besucher</th>
+                                <th>Typ</th>
+                                <th>IP-Adresse</th>
+                                <th>Profitcenter</th>
+                                <th>Eingang</th>
+                                <th>Ausgang</th>
+                                <th>Hauptkasse</th>
+                                <th nowrap="nowrap">Ausgang Aktivierbar</th>
+                                <th nowrap="nowrap">Ext. Verkauf</th>
+                                <th nowrap="nowrap">Int. Verkauf</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="at : ${info.sektoren}">
-                                <td class="colXSmall"><span th:text="${at.sektorNr}"></span></td>
-                                <td><span th:text="${at.bezeichnung}"></span></td>
-                                <td><span th:text="${at.betrieb}"></span></td>
-                                <td class="colXSmall"><span th:text="${at.tarifPflichtig ? 'JA' : 'Nein'}"></span></td>
-                                <td class="colXSmall"><span th:text="${at.zeitRelevant ? 'JA' : 'Nein'}"></span></td>
-                                <td class="colXSmall"><span th:text="${at.internerSektor ? 'JA' : 'Nein'}"></span></td>
-                                <td class="colSmall"><span th:text="${at.maxBesucher}"></span></td>
+                            <tr th:each="kasse : ${info.kassen}">
+                                <td class="colXSmall"><span th:text="${kasse.arbeitsplatzId}"></span></td>
+                                <td class="colXSmall"><span th:text="${kasse.kassenNr}"></span></td>
+                                <td><span th:text="${kasse.bezeichnung}"></span></td>
+                                <td><span th:text="${kasse.typ}"></span></td>
+                                <td><span th:text="${kasse.ip}"></span></td>
+                                <td><span th:text="${kasse.profitCenter}"></span></td>
+                                <td><span th:text="${kasse.eingang}"></span></td>
+                                <td><span th:text="${kasse.ausgang}"></span></td>
+                                <td class="colXSmall"><span th:text="${kasse.hauptKasse ? 'Ja' : 'Nein'}"></span></td>
+                                <td class="colXSmall"><span th:text="${kasse.ausgangAktivierbar ? 'Ja' : 'Nein'}"></span></td>
+                                <td class="colXSmall">
+                                    <div th:if="${kasse.externVerkauf != null}">
+                                        <span th:text="${kasse.externVerkauf ? 'Ja' : 'Nein'}"></span>
+                                    </div>
+                                    <div th:if="${kasse.externVerkauf == null}"></div>
+                                </td>
+                                <td class="colXSmall">
+                                    <div th:if="${kasse.internVerkauf != null}">
+                                        <span th:text="${kasse.internVerkauf ? 'Ja' : 'Nein'}"></span>
+                                    </div>
+                                    <div th:if="${kasse.internVerkauf == null}"></div>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Medienarten Tab -->
-            <div class="tab-pane" id="medienarten">
-                <div th:replace="~{medienArt :: medienart(${info.medienArten})}"></div>
-            </div>
+                <!-- Automaten Tab -->
+                <div class="tab-pane" id="automat">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead class="table-secondary">
+                            <tr>
+                                <th>Bezeichnung</th>
+                                <th>Kassen Nr.</th>
+                                <th>Engine Version</th>
+                                <th>FCC Version</th>
+                                <th>Typ</th>
+                                <th>Untertyp</th>
+                                <th>Aktivierbar</th>
+                                <th>Treiber</th>
+                                <th>IP-Adresse</th>
+                                <th>Port</th>
+                                <th>Profitcenter</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="automat : ${info.automaten}">
+                                <td th:text="${automat.bezeichnung}"></td>
+                                <td th:text="${automat.kassenNr}"></td>
+                                <td th:text="${automat.engineVersion}"></td>
+                                <td th:text="${automat.fccVersion}"></td>
+                                <td th:text="${automat.typ}"></td>
+                                <td th:text="${automat.unterTyp}"></td>
+                                <td th:text="${automat.aktivierbar ? 'Ja' : 'Nein'}"></td>
+                                <td th:text="${automat.treiber}"></td>
+                                <td th:text="${automat.ip}"></td>
+                                <td th:text="${automat.port}"></td>
+                                <td th:text="${automat.profitcenter}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-            <!-- Medientypen Tab -->
-            <div class="tab-pane" id="medientypen">
-                <div th:replace="~{medienTyp :: medientyp(${info.medienTypen})}"></div>
-            </div>
+                <!-- Schnittstellen Tab -->
+                <div class="tab-pane" id="schnittstelle">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead class="table-secondary">
+                            <tr>
+                                <th>ID</th>
+                                <th>Bezeichnung</th>
+                                <th>Typ</th>
+                                <th>Untertyp</th>
+                                <th>Betrieb</th>
+                                <th>Kassen Nr.</th>
+                                <th>Aktiv</th>
+                                <th>mit Typ</th>
+                                <th>Port</th>
+                                <th>SSL</th>
+                                <th>Encoding</th>
+                                <th>Kommunikation</th>
+                                <th>Protokollieren</th>
+                                <th>Http-Header</th>
+                                <th>Timeout</th>
+                                <th>Endpoint</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="st : ${info.schnittstellen}">
+                                <td th:text="${st.schnittstellenId}"></td>
+                                <td th:text="${st.bezeichnung}"></td>
+                                <td th:text="${st.typ}"></td>
+                                <td th:text="${st.unterTyp}"></td>
+                                <td th:text="${st.betrieb}"></td>
+                                <td th:text="${st.kassenNr}"></td>
+                                <td th:text="${st.aktiv ? 'JA' : 'Nein'}"></td>
+                                <td th:text="${st.mediumMitTyp == 'J' ? 'JA' : 'Nein'}"></td>
+                                <td th:text="${st.mafisPort}"></td>
+                                <td th:text="${st.sslVeschluesselung == 'J' ? 'JA' : 'Nein'}"></td>
+                                <td th:text="${st.encoding}"></td>
+                                <td th:text="${st.kommunikationstyp}"></td>
+                                <td th:text="${st.protokollierung == 'J' ? 'JA' : 'Nein'}"></td>
+                                <td th:text="${st.httpHeader == 'J' ? 'JA' : 'Nein'}"></td>
+                                <td th:text="${st.timeout}"></td>
+                                <td th:text="${st.endPoint}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-            <!-- Fiskaldaten Tab -->
-            <div class="tab-pane" id="fiskal">
-                <div th:replace="~{fiskalDaten :: fiskaldaten(${info.fiskalService})}"></div>
+                <!-- Automatentypen Tab -->
+                <div class="tab-pane" id="automatenTyp">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                                <thead class="table-secondary">
+                                <tr>
+                                    <th>Automatentyp</th>
+                                    <th>Anzahl</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="at : ${info.automatenListe}">
+                                    <td th:text="${at.type}"></td>
+                                    <td th:text="${at.anzahl}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+                <!-- Zutritts Tab -->
+                <div class="tab-pane fade" id="zutritts">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead class="table-secondary">
+                            <tr>
+                                <th>ID</th>
+                                <th>Bezeichnung</th>
+                                <th>von Sektor</th>
+                                <th>nach Sektor</th>
+                                <th>Max-Besucher</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="z : ${info.zutritts}">
+                                <td th:text="${z.zutrittId}"></td>
+                                <td th:text="${z.bezeichnung}"></td>
+                                <td th:text="${z.vonSektor}"></td>
+                                <td th:text="${z.nachSektor}"></td>
+                                <td th:text="${z.maxBesucher}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sektoren Tab -->
+                <div class="tab-pane fade" id="sektoren">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                                <thead class="table-secondary">
+                                <tr>
+                                    <th>Sektor-Nr</th>
+                                    <th>Bezeichnung</th>
+                                    <th>Betrieb</th>
+                                    <th>Tarifpflichtig</th>
+                                    <th>Zeitrelevant</th>
+                                    <th>Interner Sektor</th>
+                                    <th>Max. Besucher</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="at : ${info.sektoren}">
+                                    <td class="colXSmall"><span th:text="${at.sektorNr}"></span></td>
+                                    <td><span th:text="${at.bezeichnung}"></span></td>
+                                    <td><span th:text="${at.betrieb}"></span></td>
+                                    <td class="colXSmall"><span th:text="${at.tarifPflichtig ? 'JA' : 'Nein'}"></span></td>
+                                    <td class="colXSmall"><span th:text="${at.zeitRelevant ? 'JA' : 'Nein'}"></span></td>
+                                    <td class="colXSmall"><span th:text="${at.internerSektor ? 'JA' : 'Nein'}"></span></td>
+                                    <td class="colSmall"><span th:text="${at.maxBesucher}"></span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+
+                <!-- Medienarten Tab -->
+                <div class="tab-pane" id="medienarten">
+                    <div th:replace="~{medienArt :: medienart(${info.medienArten})}"></div>
+                </div>
+
+                <!-- Medientypen Tab -->
+                <div class="tab-pane" id="medientypen">
+                    <div th:replace="~{medienTyp :: medientyp(${info.medienTypen})}"></div>
+                </div>
+
+                <!-- Fiskaldaten Tab -->
+                <div class="tab-pane" id="fiskal">
+                    <div th:replace="~{fiskalDaten :: fiskaldaten(${info.fiskalService})}"></div>
+                </div>
             </div>
         </div>
     </div>

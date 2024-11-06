@@ -1,11 +1,13 @@
 package com.ep.sysinfo.MafisSyStemInfo.controller;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
 
 import com.ep.sysinfo.MafisSyStemInfo.model.Anlage;
 import com.ep.sysinfo.MafisSyStemInfo.repository.AnlageRepository;
+import com.ep.sysinfo.MafisSyStemInfo.service.AnlageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class AnlagenController extends TabellenController {
 
     @Autowired
     private AnlageRepository anlageRepository;
+
+    @Autowired
+    private AnlageService anlageService;
 
     private static final Logger logger = LoggerFactory.getLogger(AnlagenController.class);
 
@@ -59,7 +64,7 @@ public class AnlagenController extends TabellenController {
             // Setup pagination and sorting
             Pageable paging = getPageable(seite.orElse(1), sortierReihenfolge.orElse("DESC"), sortierenNach.orElse("anlagenName"), anzahlProSeite.orElse("30"));
 
-            // Apply filtering if a search term is provided
+            // Apply filtering if a search.js term is provided
             Page<Anlage> anlagePage = suchBegriff
                     .filter(s -> !s.isEmpty())
                     .map(s -> anlageRepository.filterAnlagen(s, null, paging))
@@ -96,6 +101,140 @@ public class AnlagenController extends TabellenController {
         return "alleAnlagen";
     }
 
+    @GetMapping("/getAnlageByBetrieb")
+    public String getAnlageByBetrieb(@RequestParam("betriebName") String betriebName, Model model) {
+        // Retrieve the list of anlagen by betrieb name from the service
+        List<Anlage> anlagenList = anlageService.findAnlagenByBetrieb(betriebName);
+        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        Integer anlagenCount =  anlagenList.size();
+
+        // Add the list to the model to make it available in the Thymeleaf template
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+    @GetMapping("/getAnlageByProfitCenter")
+    public String getAnlageByProfitCenter(@RequestParam("zugProfitcenter") String zugProfitcenter, Model model) {
+        List<Anlage> anlagenList = anlageService.findAnlagenByProfitCenter(zugProfitcenter);
+        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        Integer anlagenCount =  anlagenList.size();
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+    @GetMapping("/getAnlageByModulTyp")
+    public String getAnlageByModulTyp(@RequestParam("modulTyp") String modulTyp, Model model) {
+        List<Anlage> anlagenList = anlageService.findAnlagenByModulTyp(modulTyp);
+        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        Integer anlagenCount =  anlagenList.size();
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+    @GetMapping("/getAnlageByKasse")
+    public String getAnlageByKasse(@RequestParam("typ") List<String> kasseTypes, Model model) {
+        List<Anlage> anlagenList = anlageService.findAnlagenByKasseTypes(kasseTypes);
+        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        Integer anlagenCount =  anlagenList.size();
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+    @GetMapping("/getAnlageBySchnittstelle")
+    public String getAnlageBySchnittstelle(
+            @RequestParam(value = "typ", required = false) String typ,
+            @RequestParam(value = "untertyp", required = false) String untertyp,
+            Model model) {
+
+        List<Anlage> anlagenList;
+
+        if (typ != null && untertyp != null) {
+            // Search by both Typ and Untertyp
+            anlagenList = anlageService.findAnlagenByTypAndUntertyp(typ, untertyp);
+            anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        } else if (typ != null) {
+            // Search by Typ only
+            anlagenList = anlageService.findAnlagenByTyp(typ);
+            anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        } else if (untertyp != null) {
+            // Search by Untertyp only
+            anlagenList = anlageService.findAnlagenByUntertyp(untertyp);
+            anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        } else {
+            // No filters applied, return an empty list or handle as needed
+            anlagenList = new ArrayList<>();
+        }
+        Integer anlagenCount =  anlagenList.size();
+
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+    @GetMapping("/getAnlageByAutomaten")
+    public String getAnlageByAutomaten(
+            @RequestParam(value = "engineVersion", required = false) String engineVersion,
+            @RequestParam(value = "fccVersion", required = false) String fccVersion,
+            @RequestParam(value = "typ", required = false) String typ,
+            @RequestParam(value = "unterTyp", required = false) String unterTyp,
+            Model model) {
+
+        List<Anlage> anlagenList = anlageService.findAnlageByAutomaten(engineVersion, fccVersion, typ, unterTyp);
+        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        Integer anlagenCount =  anlagenList.size();
+
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+    @GetMapping("/getAnlageByZutritts")
+    public String getAnlageByZutritts(
+            @RequestParam(value = "vonSektor", required = false) String vonSektor,
+            @RequestParam(value = "nachSektor", required = false) String nachSektor,
+            Model model) {
+
+        List<Anlage> anlagenList = anlageService.findAnlageByZutritts(vonSektor, nachSektor);
+        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        Integer anlagenCount =  anlagenList.size();
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+    @GetMapping("/getAnlageByMedienarten")
+    public String getAnlageByMedienarten(
+            @RequestParam(value = "typ", required = false) List<Integer> typ,
+            Model model) {
+
+        List<Anlage> anlagenList = anlageService.findAnlageByMedienarten(typ);
+        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        Integer anlagenCount = anlagenList.size();
+
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+
+    @GetMapping("/getAnlageByFiskaldatenTyp")
+    public String getAnlageByFiskaldatenTyp(
+            @RequestParam("typ") String typSelection,
+            Model model) {
+        //TODO: fix the all typ
+        List<Anlage> anlagenList = anlageService.findAnlageByFiskaldatenTyp(typSelection);
+        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+        Integer anlagenCount =  anlagenList.size();
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        return "anlageList";
+    }
+
+
     /**
      * Sucht nach Anlagen mit einem optionalen Suchbegriff und Sortierung.
      *
@@ -116,7 +255,7 @@ public class AnlagenController extends TabellenController {
                 Page<Anlage> anlagePage = anlageRepository.filterAnlagen(q.trim(), null, pageable);
                     anlagen = anlagePage.getContent();
             } else {
-                // No search term provided, fetch all and apply sorting
+                // No search.js term provided, fetch all and apply sorting
                 anlagen = fetchAllAnlagenWithSorting();
             }
         } catch (Exception e) {

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content" style="padding-bottom: 60px">
+    <div class="container-fluid ">
+        <div class="row align-items-center gy-3 mb-3">
+            <!-- Anlagen Header -->
+            <div class="col-2">
+                <h4>Anlagen</h4>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-2">
+                <span th:text="'Anzahl Treffer: ' + ${anlagenCount}"></span>
+            </div>
+            <!-- Search Input aligned to the right -->
+            <div class="col-10 col-md-4 col-lg-2 ms-md-auto">
+                <input type="search" class="form-control search-input" name="search" id="search" placeholder="Search" data-table="customers-list">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table  table-bordered table-hover table-sm customers-list" id="table">
+                <thead class="table-secondary">
+                <tr>
+                    <th>Anlagen Nr. </th>
+                    <th>Anlagen Name</th>
+                    <th>Ort</th>
+                    <th>Mafis Version</th>
+                    <th>Aktualisiert am</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(anlagenList)}">
+                    <td colspan="8" class="text-center">No results found.</td>
+                </tr>
+                </tbody>
+                <tbody>
+                <tr th:each="anlage : ${anlagenList}">
+                    <input type="hidden"  th:value="${anlage.anlagenId}">
+
+                    <td class="colXSmall " th:utext="${anlage.anlagenNr}"></td>
+                    <td class="colBig" nowrap="nowrap">
+                        <a th:href="@{'/getSystemInfo/' + ${anlage.anlagenId}}" th:utext="${anlage.anlagenName}"></a>
+                    </td>
+                    <td th:utext="${anlage.ort}" nowrap="nowrap"></td>
+                    <td class="colXSmall" th:utext="${anlage.mafisVersion}" nowrap="nowrap"></td>
+                    <td class="colXSmall" th:text="${#temporals.format(anlage.system.lastModified, 'dd.MM.yyyy')}"></td>
+                    <td class="colSmall" title="${anlage.status? 'Aktiv' : 'Deaktiv'}">
+                        <span th:utext="${anlage.status? 'Aktiv' : 'Deaktiv'}"
+                              th:classappend="${anlage.status} ? 'status-aktiv' : 'status-deaktiv'">
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+
+</body>
+</html>

@@ -32,9 +32,9 @@ public class ComputerService {
 
 
     /**
-     * Fetches computers with active systems and filters them based on the search term.
+     * Fetches computers with active systems and filters them based on the search.js term.
      *
-     * @param suchbegriff The search keyword.
+     * @param suchbegriff The search.js keyword.
      * @param pageable    Pagination details.
      * @return Page of filtered computers.
      */
@@ -44,7 +44,7 @@ public class ComputerService {
         // Fetch all computers using the repository and pagination
         //Page<Computer> computerPage = computerRepository.findAll(pageable);
 
-        // Convert the page content to a list and filter it based on the search term
+        // Convert the page content to a list and filter it based on the search.js term
         //List<Computer> filteredComputers = computerPage.getContent().stream()
                 //.filter(computer -> filterComputer(computer, suchbegriff))
                 //.collect(Collectors.toList());
@@ -54,11 +54,11 @@ public class ComputerService {
     }
 
     /**
-     * Filters the computer based on the provided search term.
+     * Filters the computer based on the provided search.js term.
      *
      * @param computer    The computer entity to filter.
-     * @param suchbegriff The search keyword.
-     * @return True if the computer matches the search term.
+     * @param suchbegriff The search.js keyword.
+     * @return True if the computer matches the search.js term.
      */
     private boolean filterComputer(Computer computer, String suchbegriff) {
         String searchTerm = suchbegriff.toLowerCase();
@@ -98,12 +98,12 @@ public class ComputerService {
         // Fetch all computers
         List<Computer> allComputers = computerRepository.findAll();
 
-        // If no search term is provided, return all computers
+        // If no search.js term is provided, return all computers
         if (suchPattern == null || suchPattern.trim().isEmpty()) {
             return allComputers;
         }
 
-        // Parse the search pattern to check if it's a number (anlagenNr)
+        // Parse the search.js pattern to check if it's a number (anlagenNr)
         Long searchId = null;
         try {
             searchId = Long.parseLong(suchPattern.trim());
@@ -113,7 +113,7 @@ public class ComputerService {
 
         final Long finalSearchId = searchId;
 
-// Filter computers based on the search pattern
+// Filter computers based on the search.js pattern
         String lowerCaseSearchPattern = suchPattern.toLowerCase();
         return allComputers.stream()
                 .filter(computer -> (computer.getAnlagenNr().equals(finalSearchId)) ||

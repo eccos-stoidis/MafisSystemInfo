@@ -40,7 +40,7 @@ public class ComputerController extends TabellenController {
     private static final Logger logger = LoggerFactory.getLogger(ComputerController.class);
 
     /**
-     * Displays all computer data for the plants with optional search and pagination.
+     * Displays all computer data for the plants with optional search.js and pagination.
      *
      * @param model
      * @param seite
@@ -58,7 +58,7 @@ public class ComputerController extends TabellenController {
                                @RequestParam(required = false) Optional<String> sortierReihenfolge,
                                @RequestParam(required = false) Optional<String> anzahlProSeite) {
         try {
-            logger.info("Search term: {}", suchBegriff.orElse("No search term provided"));
+            logger.info("Search term: {}", suchBegriff.orElse("No search.js term provided"));
             Pageable paging = getPageable(seite.orElse(1),
                     sortierReihenfolge.orElse("DESC"),
                     sortierenNach.orElse("anlagenNr"),
@@ -68,7 +68,7 @@ public class ComputerController extends TabellenController {
                     .filter(s -> !s.isEmpty())
                     .map(s -> computerService.sucheComputerMitAktivenAnlagen(s, paging))
                     .orElseGet(() -> computerService.findeComputerMitAktivenAnlagen(paging));
-            logger.info("Found {} computers matching the search term '{}'", computerPage.getTotalElements(), suchBegriff);
+            logger.info("Found {} computers matching the search.js term '{}'", computerPage.getTotalElements(), suchBegriff);
 
             List<Computer> computers = computerPage.getContent().stream()
                     .peek(c -> {
@@ -197,9 +197,9 @@ public class ComputerController extends TabellenController {
      * @return
      */
     @GetMapping("/sucheComputer")
-    public String search(@RequestParam(value = "search", required = false) String suchPattern, Model model) {
+    public String search(@RequestParam(value = "search.js", required = false) String suchPattern, Model model) {
         try {
-            // Search for computers based on the search term
+            // Search for computers based on the search.js term
             List<Computer> computers = computerService.sucheComputer(suchPattern);
 
             // Add the list of computers to the model

@@ -32,7 +32,18 @@
             max-width: 150px;
         }
 
+        .kasse-options-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr); /* Two columns */
+            gap: 10px;
+        }
+
         input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #ffc107 !important; /* Change border color */
+            box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important; /* Custom shadow with your color */
+            outline: none; /* Remove default outline */
+        }
+        .form-select{
             border-color: #ffc107 !important; /* Change border color */
             box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important; /* Custom shadow with your color */
             outline: none; /* Remove default outline */

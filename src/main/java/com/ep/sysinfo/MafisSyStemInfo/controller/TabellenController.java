@@ -60,7 +60,7 @@ public abstract class TabellenController {
      * @param sortierReihenfolge the sorting direction (ASC/DESC)
      * @param anzahlProSeite the number of entries per page
      * @param sortierenNach  the column to sort by
-     * @param suchbegriff    the search keyword
+     * @param suchbegriff    the search.js keyword
      * @param seitenAnzahl   the total number of pages
      * @param elementeAnzahl the total number of elements
      * @return the updated model
@@ -73,7 +73,7 @@ public abstract class TabellenController {
                                    String suchbegriff,
                                    int seitenAnzahl,
                                    long elementeAnzahl) {
-        // Populate the model with the sorting, paging, and search information
+        // Populate the model with the sorting, paging, and search.js information
         return model.addAttribute("sortierReihenfolge", Optional.ofNullable(sortierReihenfolge).orElse("DESC"))
                 .addAttribute("anzahlProSeite", Optional.ofNullable(anzahlProSeite).orElse("30"))
                 .addAttribute("sortierenNach", Optional.ofNullable(sortierenNach).orElse(""))

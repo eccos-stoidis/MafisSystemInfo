@@ -265,9 +265,9 @@ public class BenutzerController {
         }
 
     @GetMapping("/searchUser")
-    public String searchUser(@RequestParam(value = "search", required = false) String searchQuery, Model model) {
+    public String searchUser(@RequestParam(value = "search.js", required = false) String searchQuery, Model model) {
         try {
-            // Delegate the search to the service layer
+            // Delegate the search.js to the service layer
             List<Benutzer> users = benutzerService.searchUsers(searchQuery, "J");  // Only active users
             model.addAttribute("users", users);
             return "alleUser";  // Return the view with the list of users
