@@ -33,7 +33,7 @@ import org.hibernate.annotations.FetchMode;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "anlage")  // Exclude anlage to avoid infinite recursion
+@EqualsAndHashCode(exclude = {"anlage", "updates"})  // Exclude anlage to avoid infinite recursion
 public class SystemInfo implements Serializable {
 
     @Serial

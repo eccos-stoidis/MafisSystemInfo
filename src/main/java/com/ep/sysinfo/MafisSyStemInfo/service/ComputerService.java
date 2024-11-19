@@ -42,16 +42,6 @@ public class ComputerService {
     public Page<Computer> sucheComputerMitAktivenAnlagen(String suchbegriff, Pageable pageable) {
 
         return computerRepository.searchBySuchBegriff(suchbegriff, pageable);
-        // Fetch all computers using the repository and pagination
-        //Page<Computer> computerPage = computerRepository.findAll(pageable);
-
-        // Convert the page content to a list and filter it based on the search.js term
-        //List<Computer> filteredComputers = computerPage.getContent().stream()
-                //.filter(computer -> filterComputer(computer, suchbegriff))
-                //.collect(Collectors.toList());
-
-        // Return a new page with the filtered results
-        //return new PageImpl<>(filteredComputers, pageable, filteredComputers.size());
     }
 
     /**
@@ -71,6 +61,12 @@ public class ComputerService {
                 computer.getLastModified().toString().contains(searchTerm));
     }
 
+    /**
+     * Fetches and filters computers based on active Anlagen entities.
+     *
+     * @param  pageable   Pagination details for fetching computers.
+     * @return           Page of computers filtered by active Anlagen.
+     */
     public Page<Computer> findeComputerMitAktivenAnlagen(Pageable pageable) {
         // Fetch all computers using the repository and pagination
         Page<Computer> computerPage = computerRepository.findAll(pageable);

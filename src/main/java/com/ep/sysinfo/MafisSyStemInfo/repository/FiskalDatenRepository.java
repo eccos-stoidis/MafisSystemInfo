@@ -26,4 +26,11 @@ public interface FiskalDatenRepository extends JpaRepository<Fiskaldaten, Long> 
     List<Fiskaldaten> getFiskalDatenBySystemId(@Param("system_id") Long  system_id);
 
     List<Fiskaldaten> findBySystem(SystemInfo system);
+
+    @Query("""
+    SELECT f
+    FROM Fiskaldaten f
+    WHERE f.system IN :systems
+    """)
+    List<Fiskaldaten> findAllBySystems(@Param("systems") List<SystemInfo> systems);
 }
