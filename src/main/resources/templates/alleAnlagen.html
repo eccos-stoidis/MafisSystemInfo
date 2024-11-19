@@ -12,6 +12,12 @@
 
 <div id="content" style="padding-bottom: 60px">
     <div class="container-fluid ">
+        <!-- Display Success Message -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
         <div class="row align-items-baseline gy-3 mb-3">
             <div class="col-12 col-sm-4 col-lg-1">
                 <span class="h4">Anlagen</span>
@@ -45,6 +51,7 @@
                     <th>Gäste</th>
                     <th>SystemInfo</th>
                     <th>ComputerInfo</th>
+                    <th>Bearbeiten</th>
                     <th>Status</th>
                 </tr>
                 </thead>
@@ -57,8 +64,8 @@
                 <tr th:each="anlage : ${anlagen}"
                     th:classappend="${T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin() ? (anlage.status ? 'row-aktiv' : 'row-deaktiv') : ''}">
                     <td class="colXSmall " th:utext="${anlage.anlagenNr}"></td>
-                    <td class="colBig" th:utext="${anlage.anlagenName}" nowrap="nowrap"></td>
-                    <td th:utext="${anlage.ort}" nowrap="nowrap"></td>
+                    <td class="colXSmall" th:utext="${anlage.anlagenName}" nowrap="nowrap"></td>
+                    <td class="colXSmall" th:utext="${anlage.ort}" nowrap="nowrap"></td>
                     <td class="colXSmall" th:utext="${anlage.mafisVersion}" nowrap="nowrap"></td>
                     <td class="colXSmall" th:text="${#temporals.format(anlage.system.lastModified, 'dd.MM.yyyy')}"></td>
                     <td class="colXSmall" >
@@ -90,13 +97,22 @@
                             <i class="fas fa-desktop fa-2x"></i>
                         </a>
                     </td>
-                    <td class="colSmall" th:if="${T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}">
+                    <td class="colXSmall text-center" nowrap="nowrap">
+                        <a href="#"
+                           data-bs-toggle="modal"
+                           data-bs-target="#BearbeitenModal"
+                           th:attr="data-anlagen-nr=${anlage.anlagenNr}"
+                           onclick="populateModalData(this)" >
+                            <i class="fas fa-edit fa-2x"></i>
+                        </a>
+                    </td>
+                    <td class="colXSmall" th:if="${T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}">
                         <a th:href="@{'/changeStatus/' + ${anlage.anlagenNr} + '/' +${!anlage.status}}"
                            data-toggle="tooltip" data-placement="top">
                             <span th:text="${anlage.status ? 'Deaktivieren' : 'Aktivieren'}"></span>
                         </a>
                     </td>
-                    <td class="colSmall" th:if="${! T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}"
+                    <td class="colXSmall" th:if="${! T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}"
                         title="${anlage.status? 'Aktiv' : 'Deaktiviert'}">
 
                         <span th:utext="${anlage.status? 'Aktiv' : 'Deaktiviert'}"
@@ -107,6 +123,48 @@
                 </tbody>
             </table>
             <div th:insert="~{fragments/pagination(url='alleAnlagen')}"></div>
+        </div>
+    </div>
+    <div class="modal fade" id="BearbeitenModal" tabindex="-1" aria-labelledby="BearbeitenModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bearbeitenModalLabel">Anlage bearbeiten</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bearbeitenForm" th:action="@{/BetreiberByAnlage}" method="post">
+                        <!-- Display Anlage Nr -->
+                        <div class="mb-3">
+                            <label for="anlageNr" class="form-label">Anlage Nr</label>
+                            <input type="text" id="anlageNr" name="anlagenNr" class="form-control" readonly style="background-color: #E2E3E5">
+                        </div>
+                        <!-- Display Betreiber Name -->
+                        <div class="mb-3">
+                            <label for="betreiberName" class="form-label">Betreiber Name</label>
+                            <select id="betreiberName" name="betreiberName" class="form-select">
+                                <option value=""> Wählen Sie eine Option aus</option>
+                                <option value="AQUAPARK">AQUAPARK</option>
+                                <option value="BÄDER OSNABRÜCK">BÄDER OSNABRÜCK</option>
+                                <option value="BÄDER SAARBRÜCKEN">BÄDER SAARBRÜCKEN</option>
+                                <option value="DSBG">DSBG</option>
+                                <option value="GENESIS GMBH">GENESIS GMBH</option>
+                                <option value="GMF / PT">GMF / PT</option>
+                                <option value="KANNEWISCHER">KANNEWISCHER</option>
+                                <option value="MONTE MARE">MONTE MARE</option>
+                                <option value="PROVA / SM">PROVA / SM</option>
+                                <option value="SCHLÜSSEL-K.">SCHLÜSSEL-K.</option>
+                                <option value="STADTWERKE">STADTWERKE</option>
+                                <option value="VAMED">VAMED</option>
+                                <option value="WUND">WUND</option>
+                            </select>
+                        </div>
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-custom mt-3" onclick="submitEditForm(event)">Speichern</button>
+                    </form>
+
+                </div>
+            </div>
         </div>
     </div>
 </div>

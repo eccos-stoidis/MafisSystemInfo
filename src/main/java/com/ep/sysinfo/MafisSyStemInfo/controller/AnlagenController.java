@@ -6,7 +6,9 @@ import java.util.Optional;
 import java.util.ArrayList;
 
 import com.ep.sysinfo.MafisSyStemInfo.model.Anlage;
+import com.ep.sysinfo.MafisSyStemInfo.model.Betreiber;
 import com.ep.sysinfo.MafisSyStemInfo.repository.AnlageRepository;
+import com.ep.sysinfo.MafisSyStemInfo.repository.BetreiberRepository;
 import com.ep.sysinfo.MafisSyStemInfo.service.AnlageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -33,6 +32,9 @@ public class AnlagenController extends TabellenController {
 
     @Autowired
     private AnlageRepository anlageRepository;
+
+    @Autowired
+    private BetreiberRepository betreiberRepository;
 
     @Autowired
     private AnlageService anlageService;
@@ -360,4 +362,47 @@ public class AnlagenController extends TabellenController {
         }
         return "alleAnlagen";
     }
+
+    /**
+     * Create or update the Betreiber entity
+     *
+     * @param  anlagenNr         the number of the Anlage
+     * @param  betreiberName      the name of the Betreiber
+     * @param  redirectAttributes the RedirectAttributes object
+     * @return                   the string for redirection
+     */
+    @PostMapping("/BetreiberByAnlage")
+    public String getBetreiberByAnlage(
+            @RequestParam("anlagenNr") Long anlagenNr,
+            @RequestParam("betreiberName") String betreiberName,
+            RedirectAttributes redirectAttributes) {
+
+        // Check if Betreiber with the same anlagenNr already exists
+        Optional<Betreiber> existingBetreiber = betreiberRepository.findByAnlagenNr(anlagenNr);
+
+        if (existingBetreiber.isPresent()) {
+            // Update the existing record if necessary
+            Betreiber betreiber = existingBetreiber.get();
+            betreiber.setBetreiberName(betreiberName);
+            betreiberRepository.save(betreiber);
+
+            // Add success message for update
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Betreiber aktualisiert: " + betreiberName + " für Anlage:  " + anlagenNr);
+        } else {
+            // Create and save a new Betreiber if not found
+            Betreiber newBetreiber = new Betreiber();
+            newBetreiber.setAnlagenNr(anlagenNr);
+            newBetreiber.setBetreiberName(betreiberName);
+            betreiberRepository.save(newBetreiber);
+
+            // Add success message for creation
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Betreiber erfolgreich gespeichert: " + betreiberName + " für Anlage:  " + anlagenNr);
+        }
+
+        return "redirect:/alleAnlagen";
+    }
+
+
 }
