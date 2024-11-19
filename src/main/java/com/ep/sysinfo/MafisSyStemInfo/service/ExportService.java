@@ -26,6 +26,7 @@ public class ExportService {
     @Autowired
     private FiskalDatenRepository fiskalDatenRepository;
 
+    //TODO: performance issue "N+1 problem" - consider using a custom query to fetch all required data in one go
     public List<Kundeninformation> getKundenInformationen() {
         List<Kundeninformation> kundeninformationList = new ArrayList<>();
 

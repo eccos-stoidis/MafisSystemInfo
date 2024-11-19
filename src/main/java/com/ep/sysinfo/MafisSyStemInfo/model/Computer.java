@@ -74,7 +74,7 @@ public class Computer implements Serializable {
 
     @Column(name = "anzahlProcessors", columnDefinition = "TEXT")
     private String anzahlProcessors;
-
+// new version
     @Transient
     private List<String> anzahlProcessorsListe;
 

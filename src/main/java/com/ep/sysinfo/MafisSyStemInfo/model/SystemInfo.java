@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -46,21 +47,26 @@ public class SystemInfo implements Serializable {
     private Anlage anlage;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private Collection<Modul> module;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private Collection<Schnittstelle> schnittstellen;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private Collection<Kasse> kassen;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private Collection<Automat> automaten;
 
     @OneToOne(mappedBy = "system", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private Updates updates;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Zutritt> zutritts;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
@@ -68,19 +74,25 @@ public class SystemInfo implements Serializable {
     private Collection<Betrieb> betriebe;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private Collection<Profitcenter> profitCenter;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
     private Collection<Sektor> sektoren;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private Collection<MedienArt> medienArten;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
     private Collection<MedienTyp> medienTypen;
 
     @OneToMany(mappedBy = "system", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private Collection<Fiskaldaten> fiskalService;
+
+    @OneToOne(mappedBy = "system", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private GuestInfo guestsInfos;
 
     @Column(name = "last_modified")
     private LocalDateTime lastModified;

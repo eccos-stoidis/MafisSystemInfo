@@ -29,7 +29,7 @@
                 style="cursor: pointer;">
                 <td class="expand-button"></td>
                 <td th:text="${item.bezeichnung}"></td>
-                <td th:text="${item.fSystemId}"></td>
+                <td th:text="${item.fiskalSystemId}"></td>
                 <td th:text="${item.typ}"></td>
                 <td th:text="${#temporals.format(item.aktivAb, 'dd.MM.yyyy')}"></td>
                 <td th:text="${item.Format == 'N' ? 'normal' : item.Format}"></td>
@@ -63,7 +63,7 @@
                                 <td th:text="${reg.registriert ? 'JA' : 'Nein'}"></td>
                             </tr>
                             <tr class="collapse hide-table-padding" th:id="'collapseReg'+${reg.id}"
-                                th:if="${not reg.arbeitsplatzListe.isEmpty()}">
+                                th:if="${not reg.arbeistplatzListe.isEmpty()}">
                                 <td></td>
                                 <td colspan="6">
                                     <div class="p-2">
@@ -77,7 +77,7 @@
                                                 <th>IP-Adresse</th>
                                             </tr>
                                             </thead>
-                                            <tbody th:each="ar : ${reg.arbeitsplatzListe}">
+                                            <tbody th:each="ar : ${reg.arbeistplatzListe}">
                                             <tr>
                                                 <td th:text="${ar.kassenNr}"></td>
                                                 <td th:text="${ar.arbeitsplatzId}"></td>

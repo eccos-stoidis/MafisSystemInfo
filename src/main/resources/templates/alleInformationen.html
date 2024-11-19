@@ -7,15 +7,15 @@
 <div id="content" style="padding-bottom: 60px">
     <div class="container-fluid ">
         <div class="row align-items-baseline gy-3 mb-3">
-            <div class="col-12 col-sm-4 col-lg-1">
+            <div class="col-12 col-sm-4 col-lg-3">
                 <span class="h4">System Informationen</span>
             </div>
             <div class="col-12 col-sm-6 col-lg-2">
-                <span>Anzahl Treffer: [[${elementeAnzahl}]] </span>
+                <span  class="badge fs-6"
+                       style="background-color: #fecb01; color: black;">Anzahl Treffer: [[${elementeAnzahl}]] </span>
             </div>
             <div class="col-12 col-sm-4 col-lg-2">
-                <input type="search" class="form-control search-input" name="search" id="search" placeholder="Search"
-                       data-table="customers-list">
+                <form th:replace="~{fragments/sucheInfo}"></form>
             </div>
             <div class="col-12 col-sm-4 col-lg-3">
                 <form th:replace="~{fragments/anzahlProSeite}"></form>
@@ -35,7 +35,7 @@
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(infos)}">
-                    <td colspan="8" class="text-center">No results found.</td>
+                    <td colspan="8" class="text-center">Keine Ergebnisse gefunden.</td>
                 </tr>
                 </tbody>
                 <tbody>
@@ -54,7 +54,7 @@
                         </a>
                     </td>
                     <td class="colSmall">
-                        <span th:utext="${info.anlage.status ? 'Aktiv' : 'Deaktiv'}"
+                        <span th:utext="${info.anlage.status ? 'Aktiv' : 'Deaktiviert'}"
                               th:classappend="${info.anlage.status ? 'status-aktiv' : 'status-deaktiv'}">
                         </span>
                     </td>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
+<head th:replace="~{fragments/headerAndNav :: header}"></head>
+<body>
+<div th:replace="~{fragments/headerAndNav :: navbar}"></div>
+
+<div id="content" style="padding-bottom: 60px">
+    <div class="container-fluid ">
+        <div class="error-container shadow mt-5">
+            <div class="error-header text-danger text-center">
+                <h2>Es ist ein Fehler passiert!</h2>
+            </div>
+            <div class="error-body">
+                <div class="alert alert-danger text-center" role="alert">
+                    <p th:text="${error}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/headerAndNav :: footer}"></div>
+<!-- Bootstrap JS -->
+<script th:src="@{/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle.min.js}"></script>
+
+</body>
+</html>
