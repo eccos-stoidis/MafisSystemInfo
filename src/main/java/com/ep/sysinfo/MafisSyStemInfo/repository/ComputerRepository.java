@@ -26,6 +26,13 @@ public interface ComputerRepository extends JpaRepository<Computer, Long> {
     @Transactional
     void deleteByAnlagenNr(Long anlagenNr);
 
+    @Query("""
+    SELECT c
+    FROM Computer c
+    WHERE c.anlagenNr IN :anlagenNrs
+    """)
+    List<Computer> findAllByAnlagenNrs(@Param("anlagenNrs") List<Long> anlagenNrs);
+
     @Query("SELECT c FROM Computer c WHERE " +
             "(c.anlagenNr = :suchBegriff) OR " +
             "(c.computerName IS NOT NULL AND LOWER(c.computerName) LIKE LOWER(CONCAT('%', :suchBegriff, '%'))) OR " +
