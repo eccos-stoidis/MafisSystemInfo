@@ -82,7 +82,7 @@ public class SecurityConfig {
     public SecurityFilterChain formLoginSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**","/webjars/**", "/h2-console/**","/addUser").permitAll()  // Allow public access to static resources and H2 console
+                        .requestMatchers("/resources/**", "/static/**","/rest/**", "/css/**", "/js/**", "/images/**","/webjars/**", "/h2-console/**","/addUser").permitAll()  // Allow public access to static resources and H2 console
                         .anyRequest().hasAnyAuthority("user", "admin")  // Allow both "user" and "admin" roles for other requests
                 )
                 .formLogin(form -> form

@@ -14,6 +14,7 @@
         <!-- Hamburger Menu -->
         <nav id="slide-menu" class="d-lg-none" th:fragment="navigation">
             <ul>
+                <li><a class="nav-link" th:href="@{/homepage}"><i class="fas fa-home"></i> Startseite</a></li>
                 <li><a class="nav-link" th:href="@{/alleAnlagen}"><i class="fas fa-hotel"></i> Anlagen</a></li>
                 <li><a class="nav-link" th:href="@{/alleInformationen}"><i class="fas fa-info-circle"></i> System Infos</a></li>
                 <li><a class="nav-link" th:href="@{/alleComputer}"> <i class="fas fa-desktop"></i> Computer Infos</a></li>
@@ -33,6 +34,7 @@
         <!-- Regular Navbar for larger screens -->
         <nav class="navbar navbar-expand-lg d-none d-lg-block" id="thenav" th:fragment="navigation">
             <ul class="navbar-nav">
+                <li><a class="nav-link" th:href="@{/homepage}"><i class="fas fa-home"></i> Startseite</a></li>
                 <li class="nav-item active"><a class="nav-link" th:href="@{/alleAnlagen}"><i class="fas fa-hotel"></i> Anlagen</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/alleInformationen}"><i class="fas fa-info-circle"></i> System Infos</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/alleComputer}"> <i class="fas fa-desktop"></i> Computer Infos</a></li>

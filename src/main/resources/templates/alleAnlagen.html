@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:tiles="http://www.thymeleaf.org">
 <head th:replace="~{fragments/headerAndNav :: header}"></head>
+<style>
+    .tooltip-inner {
+        font-size: 1.2rem; /* Adjust the size to your needs */
+        padding: 10px;
+    }
+</style>
 <body>
 <div th:replace="~{fragments/headerAndNav :: navbar}"></div>
 
@@ -11,7 +17,8 @@
                 <span class="h4">Anlagen</span>
             </div>
             <div class="col-12 col-sm-6 col-lg-2">
-                <span>Anzahl Treffer: [[${elementeAnzahl}]] </span>
+                <span  class="badge fs-6"
+                       style="background-color: #fecb01; color: black;">Anzahl Treffer: [[${elementeAnzahl}]] </span>
             </div>
             <div class="col-12 col-sm-4 col-lg-2">
                 <form th:replace="~{fragments/suche}"></form>
@@ -35,6 +42,7 @@
                     <th th:replace="~{fragments/tabellenkopf (spaltenName='Mafisversion', sortierenNach='mafisVersion', url='alleAnlagen')}"></th>
                     <th th:replace="~{fragments/tabellenkopf (spaltenName='aktualisiert am', sortierenNach='system.lastModified', url='alleAnlagen')}"></th>
                     <th th:replace="~{fragments/tabellenkopf (spaltenName='Testbetrieb', sortierenNach='testBetrieb', url='alleAnlagen')}"></th>
+                    <th>Gäste</th>
                     <th>SystemInfo</th>
                     <th>ComputerInfo</th>
                     <th>Status</th>
@@ -42,7 +50,7 @@
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(anlagen)}">
-                    <td colspan="8" class="text-center">No results found.</td>
+                    <td colspan="8" class="text-center">Keine Ergebnisse gefunden.</td>
                 </tr>
                 </tbody>
                 <tbody>
@@ -60,6 +68,15 @@
                         </div>
 
                     </td>
+                    <td class="colXSmall text-center" nowrap="nowrap">
+                        <span th:if="${anlage.system.guestsInfos != null}"
+                              th:utext="${anlage.system.guestsInfos.totalGuestsAdult + anlage.system.guestsInfos.totalGuestsChild}"
+                              data-bs-toggle="tooltip"
+                              th:attr="data-bs-original-title=|Erwachsene: ${anlage.system.guestsInfos.totalGuestsAdult}, Kinder: ${anlage.system.guestsInfos.totalGuestsChild}|">
+                        </span>
+                        <span th:if="${anlage.system.guestsInfos == null}">N/A</span>
+                    </td>
+
                     <td class="colXSmall text-center"  nowrap="nowrap">
                         <a  th:href="@{'/getSystemInfo/' + ${anlage.anlagenId}}" data-toggle="tooltip"
                            data-placement="top"
@@ -80,9 +97,9 @@
                         </a>
                     </td>
                     <td class="colSmall" th:if="${! T(com.ep.sysinfo.MafisSyStemInfo.controller.BenutzerController).isAdmin()}"
-                        title="${anlage.status? 'Aktiv' : 'Deaktiv'}">
+                        title="${anlage.status? 'Aktiv' : 'Deaktiviert'}">
 
-                        <span th:utext="${anlage.status? 'Aktiv' : 'Deaktiv'}"
+                        <span th:utext="${anlage.status? 'Aktiv' : 'Deaktiviert'}"
                               th:classappend="${anlage.status} ? 'status-aktiv' : 'status-deaktiv'">
                         </span>
                     </td>

@@ -45,6 +45,7 @@ public class ComputerRestController {
             existingComputer.ifPresent(pc -> {
                 logger.info("Existing computer found. Deleting old data for AnlageNr: {}", computer.getAnlagenNr());
                 computerRepository.deleteByAnlagenNr(computer.getAnlagenNr());
+
             });
 
             // Update last modified and prepare for saving
@@ -85,84 +86,44 @@ public class ComputerRestController {
      * @return The cleaned computer object.
      */
     private Computer prepareSave(Computer computer) {
-        // Handle the 'memoryListe' field: trim each element and join them into a single string for storage
-        if (computer.getMemoryListe() != null && !computer.getMemoryListe().isEmpty()) {
-            String memory = computer.getMemoryListe().stream()
-                    .map(item -> item.replaceAll("\\s+", " ").trim())  // Aggressively trim whitespace
-                    .collect(Collectors.joining("\n"));  // Join elements with newline separator
-            memory = memory.replace("”á", "öß")
-                    .replace("Verf�gbar", "Verfügbar");
-            computer.setMemory(memory); // Store the joined and cleaned string in the 'memory' field
+        // Process Memory
+        String memory = computer.getMemory()
+                .replace("”á", "öß")
+                .replace("Verf�gbar", "Verfügbar");
+        computer.setMemory(memory);
+
+        // Process Drives
+        String drives = computer.getDrives()
+                .replace("„", "ä");
+        computer.setDrives(drives);
+
+        // Process AnzahlProcessors
+        String processors = computer.getAnzahlProcessors().trim();
+
+// Clean up the input format by normalizing spaces
+        processors = processors.replaceAll("\\s+", " "); // Replace multiple spaces with a single space
+
+// Remove labels and extract values
+        processors = processors.replace("NumberOfCores", "")
+                .replace("NumberOfLogicalProcessors,", "")
+                .trim();
+
+// Split into parts
+        String[] parts = processors.split(" ");
+
+// Validate and process parts
+        if (parts.length == 2) {
+            String kerne = parts[0].trim();
+            String logischeProzessoren = parts[1].trim();
+            String anzahlProcessors = String.format("Anzahl der Kerne: %s   Anzahl der Logische Prozessoren: %s", kerne, logischeProzessoren);
+            computer.setAnzahlProcessors(anzahlProcessors);
+        } else {
+            // Log a warning if the input format is unexpected
+            logger.warn("Unexpected format for AnzahlProcessors: {}", processors);
+            computer.setAnzahlProcessors("Unrecognized format");
         }
 
-        // Handle the 'drivesListe' field: trim each element and join them into a single string for storage
-        if (computer.getDrivesListe() != null && !computer.getDrivesListe().isEmpty()) {
-            String drives = computer.getDrivesListe().stream()
-                    .map(item -> item.replaceAll("\\s+", " ").trim())  // Trim each element
-                    .collect(Collectors.joining("\n"));  // Join elements with newline separator
-            drives = drives.replace("„", "ä");
-            computer.setDrives(drives); // Store the joined and cleaned string in the 'drives' field
-        }
-
-        // Clean up the processor information from 'anzahlProcessorsListe'
-        if (computer.getAnzahlProcessorsListe() != null && !computer.getAnzahlProcessorsListe().isEmpty()) {
-            String processorInfo = computer.getAnzahlProcessorsListe().get(1).replaceAll("\\s+", " ").trim();
-            if (processorInfo.contains(",")) {
-                String[] parts = processorInfo.split(",");
-                if (parts.length >= 2) {
-                    String cores = parts[0].replace("NumberOfCores", "").trim();
-                    String logicalProcessors = parts[1].replace("NumberOfLogicalProcessors", "").trim();
-                    String formattedProcessorInfo = String.format("Anzahl der Kerne: %s   Anzahl der Logische Prozessoren: %s", cores, logicalProcessors);
-                    computer.setAnzahlProcessors(formattedProcessorInfo); // Store the formatted info in the 'anzahlProcessors' field
-                }
-            } else {
-                // If there's no comma, store the unformatted data and remove any extra whitespace
-                processorInfo = processorInfo.replaceAll("\\s+", " ").trim();  // Remove extra whitespace
-                computer.setAnzahlProcessors(processorInfo);  // Store the cleaned-up processor info
-            }
-        }
-
-        // Handle the 'prozessorenListe' field: trim each element and join them into a single string for storage
-        if (computer.getProzessorenListe() != null && !computer.getProzessorenListe().isEmpty()) {
-            String prozessoren = computer.getProzessorenListe().stream()
-                    .map(item -> item.replaceAll("\\s+", " ").trim())  // Trim each element
-                    .collect(Collectors.joining("\n"));  // Join elements with newline separator
-            computer.setProzessoren(prozessoren); // Store the joined string in the 'prozessoren' field
-        }
-
-        // Handle the 'videoCardsListe' field: trim each element and join them into a single string for storage
-        if (computer.getVideoCardsListe() != null && !computer.getVideoCardsListe().isEmpty()) {
-            String videoCards = computer.getVideoCardsListe().stream()
-                    .map(item -> item.replaceAll("\\s+", " ").trim())  // Trim each element
-                    .collect(Collectors.joining("\n"));  // Join elements with newline separator
-            computer.setVideoCards(videoCards); // Store the joined string in the 'videoCards' field
-        }
-
-        // Handle the 'physicalDiskInformationListe' field: trim each element and join them into a single string for storage
-        if (computer.getPhysicalDiskInformationListe() != null && !computer.getPhysicalDiskInformationListe().isEmpty()) {
-            String physicalDiskInformation = computer.getPhysicalDiskInformationListe().stream()
-                    .map(item -> item.replaceAll("\\s+", " ").trim())  // Trim each element
-                    .collect(Collectors.joining("\n"));  // Join elements with newline separator
-            computer.setPhysicalDiskInformation(physicalDiskInformation); // Store the joined string in the 'physicalDiskInformation' field
-        }
-
-        // Handle the 'cdRomInformationListe' field: trim each element and join them into a single string for storage
-        if (computer.getCdRomInformationListe() != null && !computer.getCdRomInformationListe().isEmpty()) {
-            String cdRomInformation = computer.getCdRomInformationListe().stream()
-                    .map(item -> item.replaceAll("\\s+", " ").trim())  // Trim each element
-                    .collect(Collectors.joining("\n"));  // Join elements with newline separator
-            computer.setCdRomInformation(cdRomInformation); // Store the joined string in the 'cdRomInformation' field
-        }
-
-        // Handle the 'printerListe' field: trim each element and join them into a single string for storage
-        if (computer.getPrinterListe() != null && !computer.getPrinterListe().isEmpty()) {
-            String printer = computer.getPrinterListe().stream()
-                    .map(item -> item.replaceAll("\\s+", " ").trim())  // Trim each element
-                    .collect(Collectors.joining("\n"));  // Join elements with newline separator
-            computer.setPrinter(printer); // Store the joined string in the 'printer' field
-        }
-
-        return computer; // Return the processed computer object
+        return computer;
     }
 
 

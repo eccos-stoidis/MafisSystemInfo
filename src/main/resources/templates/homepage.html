@@ -8,23 +8,132 @@
 <!-- Main Content -->
 <div id="content">
     <div class="container my-5">
-        <div class="row">
-            <div class="col-12 ">
-                <div class="card align">
-                    <div class="login-header">
-                        <h5 class="card-title">Mafis Kunden technische Information</h5>
-                    </div>
-                    <div class="login-body">
-                        <p>Willkommen auf Mafis Kunden technische Information von eccos pro gmbh!</p>
-                        <p>Sie können hier alle technische Informationen von Mafis sowie Informationen über Computer von Kunden nachschauen!</p>
-                        <p>Alle Informationen werden nach dem Tagesabschluss aktualisiert!</p>
-                        <p>Sie haben auch die Möglichkeit, Ihr eigenes Kennwort zu ändern.</p>
+        <!-- Page Header -->
+        <div class="text-center mb-4">
+            <h2 class=" fw-bold text-secondary">Mafis Kunden Technische Information</h2>
+            <p class="text-muted">Aktuelle Statistiken und Versionsinformationen</p>
+        </div>
+
+        <!-- Card Section -->
+        <div class="row g-4">
+            <!-- Mafis Version Card -->
+            <div class="col-12 col-md-4">
+                <div class="card bg-light shadow-sm p-3 text-center border-0">
+                    <h3 class="card-title ">Versionen Mafis</h3>
+                    <p th:text="${mavisVersionCount}"
+                       data-bs-toggle="modal"
+                       data-bs-target="#mavisVersionModal"
+                       class="text-dark fw-bold display-6"
+                       style="cursor: pointer;">
+                    </p>
+                </div>
+            </div>
+            <!-- Engine Version Card -->
+            <div class="col-12 col-md-4">
+                <div class="card bg-light shadow-sm p-3 text-center border-0">
+                    <h3 class="card-title ">Engine Version</h3>
+                    <p th:text="${engineVersionCount}"
+                       data-bs-toggle="modal"
+                       data-bs-target="#engineVersionModal"
+                       class="text-dark fw-bold display-6"
+                       style="cursor: pointer;">
+                    </p>
+                </div>
+            </div>
+            <!-- FCC Version Card -->
+            <div class="col-12 col-md-4">
+                <div class="card bg-light shadow-sm p-3 text-center border-0">
+                    <h3 class="card-title ">FCC Version</h3>
+                    <p th:text="${fccVersionCount}"
+                       data-bs-toggle="modal"
+                       data-bs-target="#fccVersionModal"
+                       class="text-dark fw-bold display-6"
+                       style="cursor: pointer;">
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guest Overview Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card bg-light shadow-sm border-0">
+                    <div class="card-body">
+                        <!-- Card Title with Date -->
+                        <div class="d-flex flex-column align-items-left">
+                            <h5 class="card-title fw-bold ">
+                                <i class="fa-solid fa-users fa-2x me-2"></i> Gästeübersicht
+                            </h5>
+                            <p class="text-muted fs-6 mb-0">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                <span th:text="${#temporals.format(gesternDatum, 'dd.MM.yyyy')}"></span>
+                            </p>
+                        </div>
+
+                        <!-- Total Guests -->
+                        <p class="fs-6 text-muted">Gesamtanzahl aller Gäste:
+                            <span class="text-dark fw-semibold" th:text="${totalGuests}"></span>
+                        </p>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-person fa-2x me-2"></i>
+                                    <div>
+                                        <p class="mb-0 text-muted">Erwachsene</p>
+                                        <p class="mb-0 text-dark fw-bold" th:text="${totalGuestsAdults}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-child  fa-2x me-2"></i>
+                                    <div>
+                                        <p class="mb-0 text-muted">Kinder</p>
+                                        <p class="mb-0 text-dark fw-bold" th:text="${totalGuestsKinder}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modals Section -->
+<!-- Modal for Mafis Versions -->
+<div class="modal fade" id="mavisVersionModal" tabindex="-1" aria-labelledby="mavisVersionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center fw-bold" id="mavisVersionModalLabel">
+                    Anzahl der Anlage pro Mafis Version
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr class="text-center">
+                        <th>Version</th>
+                        <th>Anzahl der Anlage</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="text-center" th:each="entry : ${mavisVersionCounts}">
+                        <td th:text="${entry.key}">Version Number</td>
+                        <td th:text="${entry.value}">Count</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Repeat similar modal structure for Engine and FCC versions -->
+
 <!-- Footer -->
 <div th:replace="~{fragments/headerAndNav :: footer}"></div>
 </body>

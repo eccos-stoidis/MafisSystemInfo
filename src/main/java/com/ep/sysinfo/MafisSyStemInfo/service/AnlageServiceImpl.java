@@ -5,7 +5,7 @@ import com.ep.sysinfo.MafisSyStemInfo.repository.AnlageRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -19,72 +19,131 @@ public class AnlageServiceImpl implements AnlageService{
     }
 
     public List<Anlage> findAnlagenByBetrieb(String betriebName) {
-        return anlageRepository.findAnlagenByBetriebName(betriebName);
+        // Fetch all Anlagen using the repository method with @EntityGraph
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
+
+        // Filter and sort the Anlagen by the Betrieb name
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem()
+                        .getBetriebe()
+                        .stream()
+                        .anyMatch(betrieb -> betrieb.getBetriebName().equals(betriebName)))
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name, handling nulls
+                .toList(); // Collect as a list
     }
 
     @Override
     public List<Anlage> findAnlagenByProfitCenter(String profitcenter) {
-        return anlageRepository.findAnlageByZugProfitcenter(profitcenter);
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
+
+        // Filter and sort the Anlagen by profitCenter name
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem()
+                        .getProfitCenter()
+                        .stream()
+                        .anyMatch(pc -> pc.getZugProfitcenter().equals(profitcenter))) // Filter by profitcenter
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
+                .toList(); // Collect as a list
     }
 
     @Override
     public List<Anlage> findAnlagenByModulTyp(String modulTyp) {
-        return anlageRepository.findAnlageByModulTyp(modulTyp);
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
+
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem()
+                        .getModule()
+                        .stream()
+                        .anyMatch(modul -> modul.getModulTyp().equals(modulTyp))) // Filter by modulTyp
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
+                .toList(); // Collect as a list
     }
 
     @Override
     public List<Anlage> findAnlagenByKasseTypes(List<String> kasseTypes) {
-        return anlageRepository.findAnlagenByKasseTypes(kasseTypes);
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem()
+                        .getKassen()
+                        .stream()
+                        .anyMatch(kasse -> kasseTypes.contains(kasse.getTyp()))) // Filter by kasse types
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
+                .toList(); // Collect as a list
     }
 
     @Override
-    public List<Anlage> findAnlagenByTyp(String typ) {
-        return anlageRepository.findByTyp(typ);
-    }
+    public List<Anlage> findAnlageBySchnittstellen(String typ, String untertyp) {
+        // Fetch all active Anlagen with required relationships
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
 
-    @Override
-    public List<Anlage> findAnlagenByUntertyp(String untertyp) {
-        return anlageRepository.findByUntertyp(untertyp);
-    }
-
-    @Override
-    public List<Anlage> findAnlagenByTypAndUntertyp(String typ, String untertyp) {
-        return anlageRepository.findByTypAndUntertyp(typ, untertyp);
+        // Filter the Anlagen based on provided `typ` and `untertyp`
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem().getSchnittstellen().stream().anyMatch(schnittstelle ->
+                        (typ == null || typ.isEmpty() || typ.equals(schnittstelle.getTyp())) &&
+                                (untertyp == null || untertyp.isEmpty() || untertyp.equals(schnittstelle.getUnterTyp()))
+                )) // Apply filtering criteria for both `typ` and `untertyp`
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
+                .toList(); // Collect as a list
     }
 
     @Override
     public List<Anlage> findAnlageByAutomaten(String engineVersion, String fccVersion, String typ, String unterTyp) {
-        return anlageRepository.findAnlageByAutomatenParams(
-                engineVersion != null && !engineVersion.isEmpty() ? engineVersion : null,
-                fccVersion != null && !fccVersion.isEmpty() ? fccVersion : null,
-                typ != null && !typ.isEmpty() ? typ : null,
-                unterTyp != null && !unterTyp.isEmpty() ? unterTyp : null
-        );
+        // Fetch all active Anlagen with required relationships
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
+
+        // Filter the Anlagen based on provided parameters
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem().getAutomaten().stream().anyMatch(auto ->
+                        (engineVersion == null || engineVersion.isEmpty() || engineVersion.equals(auto.getEngineVersion())) &&
+                                (fccVersion == null || fccVersion.isEmpty() || fccVersion.equals(auto.getFccVersion())) &&
+                                (typ == null || typ.isEmpty() || typ.equals(auto.getTyp())) &&
+                                (unterTyp == null || unterTyp.isEmpty() || unterTyp.equals(auto.getUnterTyp()))
+                )) // Apply all filtering criteria
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
+                .toList(); // Collect as a list
     }
 
     @Override
     public List<Anlage> findAnlageByZutritts(String vonSektor, String nachSektor) {
-        return anlageRepository.findAnlageByZutrittsParams(
-                vonSektor != null && !vonSektor.isEmpty() ? vonSektor : null,
-                nachSektor != null && !nachSektor.isEmpty() ? nachSektor : null
-        );
+        // Fetch all active Anlagen with required relationships
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
+
+        // Filter the Anlagen based on provided parameters
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem().getZutritts().stream().anyMatch(zutritt ->
+                        (vonSektor == null || vonSektor.isEmpty() || vonSektor.equals(zutritt.getVonSektor())) &&
+                                (nachSektor == null || nachSektor.isEmpty() || nachSektor.equals(zutritt.getNachSektor()))
+                )) // Apply all filtering criteria
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
+                .toList(); // Collect as a list
     }
 
 
     @Override
     public List<Anlage> findAnlageByFiskaldatenTyp(String typSelection) {
-        if ("efsta".equalsIgnoreCase(typSelection)) {
-            return anlageRepository.findAnlageByFiskaldatenEfsta();
-        } else if ("fiskaltrust".equalsIgnoreCase(typSelection)) {
-            return anlageRepository.findAnlageByFiskaldatenFiskaltrust();
-        } else {
-            return anlageRepository.findAll(); // Assuming all records when "all" is selected
-        }
+        // Fetch all active Anlagen with required relationships
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
+
+        // Filter the Anlagen based on the provided `typSelection`
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem().getFiskalService().stream().anyMatch(fiskalService ->
+                        "efsta".equalsIgnoreCase(typSelection) && "efsta".equalsIgnoreCase(fiskalService.getTyp()) ||
+                                "fiskaltrust".equalsIgnoreCase(typSelection) && "fiskaltrust".equalsIgnoreCase(fiskalService.getTyp()) ||
+                                "all".equalsIgnoreCase(typSelection) // Include all if "all" is selected
+                )) // Apply filtering criteria
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
+                .toList(); // Collect as a list
     }
 
     @Override
     public List<Anlage> findAnlageByMedienarten(List<Integer> typ) {
-        return anlageRepository.findAnlageByMedienarten(typ);
+        List<Anlage> anlagen = anlageRepository.findAllActiveAnlagen();
+        return anlagen.stream()
+                .filter(anlage -> anlage.getSystem().getMedienArten().stream().anyMatch(medienArt ->
+                        (typ == null || typ.isEmpty() || typ.contains(medienArt.getTypNr()))
+                )) // Apply filtering criteria
+                .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
+                .toList(); // Collect as a list
     }
 
 

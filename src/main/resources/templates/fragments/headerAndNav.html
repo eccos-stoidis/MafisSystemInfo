@@ -47,15 +47,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="berichteModalLabel">Search Berichte</h5>
+                    <h5 class="modal-title" id="berichteModalLabel">Suchberichte</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="berichteForm">
                         <div class="mb-3">
-                            <label for="searchType" class="form-label">Search Anlagen by</label>
+                            <label for="searchType" class="form-label">Anlagen suchen nach</label>
                             <select class="form-select" id="searchType" name="searchType">
-                                <option value="">Select an option</option>
+                                <option value="">Wählen Sie eine Option aus</option>
                                 <option value="betriebe">Betriebe</option>
                                 <option value="profitcenter">Profitcenter</option>-->
                                 <option value="module">Module</option>
@@ -71,7 +71,7 @@
                         <div id="additionalFilters" class="d-none">
                             <!-- Additional filter options will appear here -->
                         </div>
-                        <button type="button" class="btn btn-custom mt-3" onclick="applySearch()">Submit</button>
+                        <button type="button" class="btn btn-custom mt-3" onclick="applySearch()">Einreichen</button>
                     </form>
                 </div>
             </div>
@@ -86,9 +86,17 @@
     </nav>
     <script th:src="@{/webjars/bootstrap/5.3.3/dist/js/bootstrap.bundle.min.js}"></script>
     <script>
-        $(function () {
-            $('.example-popover').popover({
-                container: 'body'
+        document.addEventListener('DOMContentLoaded', function () {
+            // Enable tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Enable popovers
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            popoverTriggerList.forEach(function (popoverTriggerEl) {
+                new bootstrap.Popover(popoverTriggerEl);
             });
         });
     </script>

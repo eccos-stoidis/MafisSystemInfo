@@ -269,7 +269,6 @@
                                return; // Stop the function if validation fails
                            } else {
                                // Remove error styling and validation message if at least one field is filled
-                               typLabel.classList.remove('text-danger');
                                const existingMessage = document.querySelector('.automaten-validation-message');
                                if (existingMessage) {
                                    existingMessage.remove();

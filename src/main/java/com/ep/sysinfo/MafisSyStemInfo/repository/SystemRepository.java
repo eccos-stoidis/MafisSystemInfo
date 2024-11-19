@@ -1,8 +1,10 @@
 package com.ep.sysinfo.MafisSyStemInfo.repository;
 
+import com.ep.sysinfo.MafisSyStemInfo.model.Anlage;
 import com.ep.sysinfo.MafisSyStemInfo.model.SystemInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,5 +35,8 @@ public interface SystemRepository extends JpaRepository<SystemInfo, Long> {
     @Query("SELECT a FROM SystemInfo a WHERE a.anlage.status = true AND (a.anlage.anlagenNr = :suchId OR a.anlage.anlagenName LIKE CONCAT('%', :anlagenName, '%')) ORDER BY a.anlage.anlagenName")
     List<SystemInfo> suchSystems(@Param("suchId") Long suchId, @Param("anlagenName") String anlagenName);
 
-    Optional<SystemInfo> findByAnlageAnlagenId(Long anlageId);
+    SystemInfo findByAnlageAnlagenId(Long anlageId);
+
+    @EntityGraph(attributePaths = {"updates", "anlage","guestsInfos"})
+    Page<SystemInfo> findAll(Pageable pageable);
 }

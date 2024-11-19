@@ -18,11 +18,8 @@ public interface AnlageService {
 
     List<Anlage> findAnlagenByKasseTypes(List<String> kasseTypes);
 
-    List<Anlage> findAnlagenByTyp(String typ);
 
-    List<Anlage> findAnlagenByUntertyp(String untertyp);
-
-    List<Anlage> findAnlagenByTypAndUntertyp(String typ, String untertyp);
+    List<Anlage> findAnlageBySchnittstellen(String typ, String untertyp);
 
     List<Anlage> findAnlageByAutomaten(String engineVersion, String fccVersion, String typ, String unterTyp);
 

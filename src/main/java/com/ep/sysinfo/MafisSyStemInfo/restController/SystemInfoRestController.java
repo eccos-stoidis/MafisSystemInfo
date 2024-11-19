@@ -19,6 +19,8 @@ import com.ep.sysinfo.MafisSyStemInfo.model.*;
 import common.Error;
 import common.Response;
 
+import javax.swing.text.html.Option;
+
 /**
  * RestController for system information of the facility.
  */
@@ -76,6 +78,9 @@ public class SystemInfoRestController {
     @Autowired
     private ArbeitsPlatzFiskalRepository arbeitsPlatzFiskalRepository;
 
+    @Autowired
+    private GuestInfoRepository guestInfoRepository;
+
     /**
      * Saves or updates system information. If the system already exists, it is updated, otherwise it is saved as a new record.
      *
@@ -123,6 +128,7 @@ public class SystemInfoRestController {
         anlage.setOrt(systemInfo.getAnlage().getOrt());
         anlage.setMafisVersion(systemInfo.getAnlage().getMafisVersion());
         anlage.setTestBetrieb(systemInfo.getAnlage().getTestBetrieb());
+        anlage.setStatus(true);
         anlageRepository.save(anlage);
 
         Long systemId = Optional.ofNullable(anlage.getSystem()).map(SystemInfo::getSystem_id).orElseThrow();
@@ -140,15 +146,24 @@ public class SystemInfoRestController {
      * @param  systemInfo The system information to be saved.
      */
     private void saveNewSystemInfo(SystemInfo systemInfo) {
-        systemInfo.setLastModified(LocalDateTime.now());
-        systemRepository.save(systemInfo);
+        // Save SystemInfo first
+        SystemInfo systemInfoToSave= new SystemInfo();
+        systemInfoToSave.setLastModified(LocalDateTime.now());
+        systemInfoToSave.setAnlage(systemInfo.getAnlage());
+        systemInfoToSave.setUpdates(systemInfo.getUpdates());
+        systemInfoToSave.setGuestsInfos(systemInfo.getGuestsInfos());
+        SystemInfo savedSystemInfo = systemRepository.save(systemInfoToSave);
 
-        Anlage anlage = systemInfo.getAnlage();
-        anlage.setSystem(systemInfo);
+
+
+        // Set the saved SystemInfo to Anlage
+        Anlage anlage = savedSystemInfo.getAnlage();
+        anlage.setSystem(savedSystemInfo); // Link Anlage to saved SystemInfo
         anlage.setStatus(true);
         anlageRepository.save(anlage);
 
-        saveSystemRelatedData(systemInfo, systemInfo);
+        // Save related data
+        saveSystemRelatedData(systemInfo, savedSystemInfo);
     }
 
     /**
@@ -168,11 +183,30 @@ public class SystemInfoRestController {
         sektorRepository.deleteBySystemId(systemId);
         medienArtRepository.deleteBySystemId(systemId);
         medienTypRepository.deleteBySystemId(systemId);
+        guestInfoRepository.deleteBySystemId(systemId);
         fiskalDatenRepository.getFiskalDatenBySystemId(systemId).forEach(fiskal -> {
             fiskal.getRegListe().forEach(reg -> arbeitsPlatzFiskalRepository.deleteByRegId(reg.getId()));
             fiskalRegRepository.deleteBySystemId(fiskal.getFiskalId());
         });
         fiskalDatenRepository.deleteBySystemId(systemId);
+        logger.info("Cleared existing system data for system ID: {}", systemId);
+
+    }
+
+    /**
+     * Retrieves all system information and returns it in a ResponseEntity.
+     *
+     * @return         ResponseEntity containing a list of SystemInfo objects
+     */
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SystemInfo>> listAllSystemInfo() {
+        try {
+            List<SystemInfo> infos = systemRepository.findAll();
+            return ResponseEntity.ok(infos);
+        } catch (Exception e) {
+            logger.error("Error fetching all system information", e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
@@ -257,35 +291,24 @@ public class SystemInfoRestController {
                     medienTypRepository.save(medienTyp);
                 });
 
+        Optional.ofNullable(systemInfo.getGuestsInfos()).ifPresent(guestsInfos -> {
+            guestsInfos.setSystem(savedSystemInfo);
+            guestInfoRepository.save(guestsInfos);
+        });
+
+
+
         Optional.ofNullable(systemInfo.getFiskalService()).stream()
                 .flatMap(Collection::stream)
                 .forEach(fiskal -> {
                     fiskal.setSystem(savedSystemInfo);
-                    fiskalDatenRepository.save(fiskal);
                     fiskal.getRegListe().forEach(fiskalReg -> {
                         fiskalReg.setFiskal(fiskal);
-                        fiskalRegRepository.save(fiskalReg);
-                        Optional.ofNullable(fiskalReg.getArbeitsplatzListe()).ifPresent(arListe -> arListe.forEach(ar -> {
+                        Optional.ofNullable(fiskalReg.getArbeistplatzListe()).ifPresent(arListe -> arListe.forEach(ar -> {
                             ar.setRegister(fiskalReg);
-                            arbeitsPlatzFiskalRepository.save(ar);
                         }));
+                        fiskalDatenRepository.save(fiskal);
                     });
                 });
-    }
-
-    /**
-     * Retrieves all system information and returns it in a ResponseEntity.
-     *
-     * @return         ResponseEntity containing a list of SystemInfo objects
-     */
-    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SystemInfo>> listAllSystemInfo() {
-        try {
-            List<SystemInfo> infos = systemRepository.findAll();
-            return ResponseEntity.ok(infos);
-        } catch (Exception e) {
-            logger.error("Error fetching all system information", e);
-            return ResponseEntity.internalServerError().build();
-        }
     }
 }

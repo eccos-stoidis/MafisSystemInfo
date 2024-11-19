@@ -15,6 +15,7 @@ import com.ep.sysinfo.MafisSyStemInfo.service.BenutzerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -65,14 +66,12 @@ public class BenutzerController {
     @GetMapping("/alleUser")
     public String getUserListe(Model model) {
         if (isAdmin()) {
-            try {
-                List<Benutzer> users = benutzerRepository.findeAktiveUser("J");
-                model.addAttribute("users", users);
-                return "alleUser";
-            }catch (Exception e) {
-                logger.error("Fehler in getUserListe", e);
-                model.addAttribute("message", "DatenbankFehler!");
+            List<Benutzer> users = benutzerRepository.findeAktiveUser("J");
+            if (users == null || users.isEmpty()) {
+                throw new ResourceNotFoundException("Keine Benutzer gefunden.");
             }
+            model.addAttribute("users", users);
+            return "alleUser";
         } else {
             model.addAttribute("message", "Sie haben keine Admin-Rechte");
         }
@@ -89,20 +88,15 @@ public class BenutzerController {
     @GetMapping("/editUser/{id}")
     public String editUser(@PathVariable Long id, Model model) {
         if (isAdmin()) {
-            try {
-                Benutzer benutzer;
-                if (id == null || id == 0) {
-                    benutzer = new Benutzer();
-                } else {
-                    benutzer = benutzerRepository.findById(id)
-                            .orElseThrow(() -> new RuntimeException("Benutzer nicht gefunden"));
-                }
-                model.addAttribute("benutzer", benutzer);
-                return "editUser";
-            } catch (Exception e) {
-                logger.error("Fehler in editUser", e);
-                model.addAttribute("message", "Es ist ein Datenbankfehler passiert!");
+            Benutzer benutzer;
+            if (id == null || id == 0) {
+                benutzer = new Benutzer();
+            } else {
+                benutzer = benutzerRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Benutzer nicht gefunden"));
             }
+            model.addAttribute("benutzer", benutzer);
+            return "editUser";
         } else {
             model.addAttribute("message", "Sie haben keine Admin-Rechte!");
         }
@@ -112,18 +106,13 @@ public class BenutzerController {
     @GetMapping("/confirmDelete/{id}")
     public String deleteUser(@PathVariable Long id, Model model) {
         if (isAdmin()) {
-            try {
-                Benutzer benutzer = benutzerRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Benutzer nicht gefunden"));
-                benutzer.setEnabled("N");
-                benutzer.setBearbeitetVon(holeAngemeldeteUser());
-                benutzer.setLastModified(LocalDateTime.now());
-                logger.info("Benutzer object : {}", benutzer);
-                benutzerRepository.save(benutzer);
-            } catch (Exception e) {
-                logger.error("Fehler in deleteUser", e);
-                model.addAttribute("message", "Es ist ein Datenbankfehler passiert!");
-            }
+            Benutzer benutzer = benutzerRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Benutzer nicht gefunden"));
+            benutzer.setEnabled("N");
+            benutzer.setBearbeitetVon(holeAngemeldeteUser());
+            benutzer.setLastModified(LocalDateTime.now());
+            logger.info("Benutzer object : {}", benutzer);
+            benutzerRepository.save(benutzer);
         }else {
             model.addAttribute("message", "Sie haben keine Admin-Rechte!");
         }
@@ -135,12 +124,7 @@ public class BenutzerController {
                                 @PathVariable Long rId,
                                 Model model) {
         if (isAdmin()) {
-            try {
-                benutzerService.updateUserRole(id, rId);
-            } catch (Exception e) {
-                logger.error("Fehler in resetKennwort" , e.getMessage());
-                model.addAttribute("message", "Datenbankfehler. Rechte konnte nicht geändert werden!");
-            }
+            benutzerService.updateUserRole(id, rId);
         }else{
             model.addAttribute("message", "Sie haben keine Admin-Rechte!");
         }
@@ -165,81 +149,76 @@ public class BenutzerController {
         if (result.hasErrors()) {
             return "editUser";
         } else {
-            try {
-                String encodedPassword;
-                if (isAdmin()) {
-                    initRollen();
-                    String currentUserName = holeAngemeldeteUser();
-                    // Check if the user already exists (update or create new)
-                    if (neuUser.getUserId() != null && neuUser.getUserId() > 0) {
-                        // Update existing user
-                        Benutzer existingUser = benutzerRepository.findById(neuUser.getUserId()).orElse(null);
-                        if (existingUser == null) {
-                            result.rejectValue("userId", "Benutzer", "Dieser Benutzer existiert nicht");
-                            return "editUser";
-                        }
-                        if(benutzerRepository.existsByUsername(neuUser.getUsername()) && !Objects.equals(existingUser.getUsername(), neuUser.getUsername())) {
-                            result.rejectValue("username", "Benutzername", "Dieser Benutzername ist bereits vergeben");
-                            return "editUser";
+            String encodedPassword;
+            if (isAdmin()) {
+                initRollen();
+                String currentUserName = holeAngemeldeteUser();
+                // Check if the user already exists (update or create new)
+                if (neuUser.getUserId() != null && neuUser.getUserId() > 0) {
+                    // Update existing user
+                    Benutzer existingUser = benutzerRepository.findById(neuUser.getUserId()).orElse(null);
+                    if (existingUser == null) {
+                        result.rejectValue("userId", "Benutzer", "Dieser Benutzer existiert nicht");
+                        return "editUser";
+                    }
+                    if(benutzerRepository.existsByUsername(neuUser.getUsername()) && !Objects.equals(existingUser.getUsername(), neuUser.getUsername())) {
+                        result.rejectValue("username", "Benutzername", "Dieser Benutzername ist bereits vergeben");
+                        return "editUser";
 
-                        }
-                        if(benutzerRepository.existsByEmail(neuUser.getEmail())&& !Objects.equals(existingUser.getEmail(), neuUser.getEmail())) {
-                            result.rejectValue("email", "E-Mail", "Diese E-Mail Adresse ist bereits vergeben");
-                            return "editUser";
+                    }
+                    if(benutzerRepository.existsByEmail(neuUser.getEmail())&& !Objects.equals(existingUser.getEmail(), neuUser.getEmail())) {
+                        result.rejectValue("email", "E-Mail", "Diese E-Mail Adresse ist bereits vergeben");
+                        return "editUser";
 
-                        }
-
-                        benutzerService.updateUser(neuUser.getUserId(), neuUser.getUsername(),
-                                neuUser.getName(), neuUser.getEmail(), LocalDateTime.now(), currentUserName);
-
-                        logger.info("Die Änderungen wurden erfolgreich gespeichert!");
-                        redirectAttributes.addFlashAttribute("benutzerSuccess", true);
-
-                    } else {
-                        // Validate for new user creation
-                        if (benutzerRepository.existsByUsername(neuUser.getUsername())) {
-                            result.rejectValue("username", "Benutzername", "Dieser Benutzername ist bereits vergeben");
-                            return "editUser";
-                        }
-                        if (benutzerRepository.existsByEmail(neuUser.getEmail())) {
-                            result.rejectValue("email", "E-Mail", "Diese E-Mail Adresse ist bereits vergeben");
-                            return "editUser";
-                        }
-
-                        // Create new user
-                        encodedPassword = encoder.encode("mafis"); // Default password
-                        neuUser.setPassword(encodedPassword);
-                        neuUser.setEnabled("J");
-                        LocalDateTime lastModified = LocalDateTime.now();
-                        neuUser.setLastModified(lastModified);
-                        neuUser.setAngemeldetAm(lastModified);
-                        neuUser.setBearbeitetVon(currentUserName);
-
-                        benutzerRepository.save(neuUser);
-
-                        // Create user role
-                        BenutzerRolle userRolle = new BenutzerRolle();
-                        Rolle rolle = rolleRepository.findeRolleByName("USER");
-                        userRolle.setRolle(rolle);
-                        userRolle.setBenutzer(neuUser);
-                        benutzerRolleRepository.save(userRolle);
-
-                        model.addAttribute("message", "Neuer Benutzer wurde erfolgreich hinzugefügt!");
                     }
 
-                    // Refresh the user list after adding/updating
-                    List<Benutzer> users = benutzerRepository.findeAktiveUser("J");
-                    redirectAttributes.addFlashAttribute("benutzerSuccess", true);
-                    model.addAttribute("users", users);
+                    benutzerService.updateUser(neuUser.getUserId(), neuUser.getUsername(),
+                            neuUser.getName(), neuUser.getEmail(), LocalDateTime.now(), currentUserName);
 
-                    return "redirect:/alleUser";
+                    logger.info("Die Änderungen wurden erfolgreich gespeichert!");
+                    redirectAttributes.addFlashAttribute("benutzerSuccess", true);
+
                 } else {
-                    model.addAttribute("message", "Sie haben keine Admin-Rechte");
-                    return "response";
+                    // Validate for new user creation
+                    if (benutzerRepository.existsByUsername(neuUser.getUsername())) {
+                        result.rejectValue("username", "Benutzername", "Dieser Benutzername ist bereits vergeben");
+                        return "editUser";
+                    }
+                    if (benutzerRepository.existsByEmail(neuUser.getEmail())) {
+                        result.rejectValue("email", "E-Mail", "Diese E-Mail Adresse ist bereits vergeben");
+                        return "editUser";
+                    }
+
+                    // Create new user
+                    encodedPassword = encoder.encode("mafis"); // Default password
+                    neuUser.setPassword(encodedPassword);
+                    neuUser.setEnabled("J");
+                    LocalDateTime lastModified = LocalDateTime.now();
+                    neuUser.setLastModified(lastModified);
+                    neuUser.setAngemeldetAm(lastModified);
+                    neuUser.setBearbeitetVon(currentUserName);
+
+                    benutzerRepository.save(neuUser);
+
+                    // Create user role
+                    BenutzerRolle userRolle = new BenutzerRolle();
+                    Rolle rolle = rolleRepository.findeRolleByName("USER");
+                    userRolle.setRolle(rolle);
+                    userRolle.setBenutzer(neuUser);
+                    benutzerRolleRepository.save(userRolle);
+
+                    model.addAttribute("message", "Neuer Benutzer wurde erfolgreich hinzugefügt!");
                 }
-            } catch (Exception ex) {
-                logger.error("Error while adding/updating user", ex);
-                model.addAttribute("message", "Ein Fehler bei der Datenbank ist passiert!");
+
+                // Refresh the user list after adding/updating
+                List<Benutzer> users = benutzerRepository.findeAktiveUser("J");
+                redirectAttributes.addFlashAttribute("benutzerSuccess", true);
+                model.addAttribute("users", users);
+                logger.info("Benutzerliste wurde aktualisiert!");
+                return "redirect:/alleUser";
+            } else {
+                model.addAttribute("message", "Sie haben keine Admin-Rechte");
+
                 return "response";
             }
         }
@@ -250,13 +229,8 @@ public class BenutzerController {
     		                    RedirectAttributes redirectAttributes,
                                 Model model) {
         if(isAdmin()) {
-            try {
-                String currentUsername = holeAngemeldeteUser();
-                benutzerService.updateKennwort(id, "mafis", currentUsername);
-            }catch (Exception e) {
-                logger.error("Fehler in resetKennwort" , e.getMessage());
-                model.addAttribute("message", "Datenbankfehler. Das Kennwort konnte nicht zurückgesetzt werden!");
-            }
+            String currentUsername = holeAngemeldeteUser();
+            benutzerService.updateKennwort(id, "mafis", currentUsername);
         }else {
             model.addAttribute("message", "Sie haben keine Admin-Rechte");
         }
@@ -266,16 +240,10 @@ public class BenutzerController {
 
     @GetMapping("/searchUser")
     public String searchUser(@RequestParam(value = "search.js", required = false) String searchQuery, Model model) {
-        try {
-            // Delegate the search.js to the service layer
-            List<Benutzer> users = benutzerService.searchUsers(searchQuery, "J");  // Only active users
-            model.addAttribute("users", users);
-            return "alleUser";  // Return the view with the list of users
-        } catch (Exception e) {
-            logger.error("Fehler in searchUser", e);
-            model.addAttribute("message", "Datenbankfehler beim Suchen der Benutzer!");
-            return "response";  // Return error response view
-        }
+        // Delegate the search.js to the service layer
+        List<Benutzer> users = benutzerService.searchUsers(searchQuery, "J");  // Only active users
+        model.addAttribute("users", users);
+        return "alleUser";  // Return the view with the list of users
     }
 
 

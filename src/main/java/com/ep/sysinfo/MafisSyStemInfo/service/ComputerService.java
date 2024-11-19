@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,9 +75,22 @@ public class ComputerService {
         // Fetch all computers using the repository and pagination
         Page<Computer> computerPage = computerRepository.findAll(pageable);
 
-        // Filter computers that have an active Anlage
+        // Collect anlagenNr values for all computers in the current page
+        List<Long> anlagenNrList = computerPage.getContent().stream()
+                .map(Computer::getAnlagenNr)
+                .collect(Collectors.toList());
+
+        // Fetch all active Anlage entities in a single query
+        List<Anlage> activeAnlagenList = anlageRepository.findActiveAnlagenByAnlagenNrIn(anlagenNrList);
+
+        // Create a set of active anlagenNr for quick lookup
+        Set<Long> activeAnlagenNrSet = activeAnlagenList.stream()
+                .map(Anlage::getAnlagenNr)
+                .collect(Collectors.toSet());
+
+        // Filter computers based on active Anlagen
         List<Computer> filteredComputers = computerPage.getContent().stream()
-                .filter(this::hasActiveAnlage)  // Custom filter method to check for active Anlage
+                .filter(c -> activeAnlagenNrSet.contains(c.getAnlagenNr()))
                 .collect(Collectors.toList());
 
         // Return a new page with the filtered results

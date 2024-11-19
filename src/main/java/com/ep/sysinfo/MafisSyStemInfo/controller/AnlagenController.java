@@ -105,42 +105,45 @@ public class AnlagenController extends TabellenController {
     public String getAnlageByBetrieb(@RequestParam("betriebName") String betriebName, Model model) {
         // Retrieve the list of anlagen by betrieb name from the service
         List<Anlage> anlagenList = anlageService.findAnlagenByBetrieb(betriebName);
-        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
+       // anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo)));
         Integer anlagenCount =  anlagenList.size();
 
-        // Add the list to the model to make it available in the Thymeleaf template
         model.addAttribute("anlagenList", anlagenList);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", "Suche bei Betriebe - Betrieb Name: " + betriebName);
         return "anlageList";
     }
 
     @GetMapping("/getAnlageByProfitCenter")
     public String getAnlageByProfitCenter(@RequestParam("zugProfitcenter") String zugProfitcenter, Model model) {
         List<Anlage> anlagenList = anlageService.findAnlagenByProfitCenter(zugProfitcenter);
-        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
         Integer anlagenCount =  anlagenList.size();
+
         model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("zugProfitcenter", zugProfitcenter);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", "Suche bei Profitcenter - zugProfitcenter: " + zugProfitcenter);
         return "anlageList";
     }
 
     @GetMapping("/getAnlageByModulTyp")
     public String getAnlageByModulTyp(@RequestParam("modulTyp") String modulTyp, Model model) {
         List<Anlage> anlagenList = anlageService.findAnlagenByModulTyp(modulTyp);
-        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
         Integer anlagenCount =  anlagenList.size();
+
         model.addAttribute("anlagenList", anlagenList);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", "Suche bei Module - Modul Typ: " + modulTyp);
         return "anlageList";
     }
 
     @GetMapping("/getAnlageByKasse")
     public String getAnlageByKasse(@RequestParam("typ") List<String> kasseTypes, Model model) {
         List<Anlage> anlagenList = anlageService.findAnlagenByKasseTypes(kasseTypes);
-        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
         Integer anlagenCount =  anlagenList.size();
         model.addAttribute("anlagenList", anlagenList);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", "Suche bei Kassen - Kasse Typ: " + kasseTypes);
         return "anlageList";
     }
 
@@ -150,28 +153,20 @@ public class AnlagenController extends TabellenController {
             @RequestParam(value = "untertyp", required = false) String untertyp,
             Model model) {
 
-        List<Anlage> anlagenList;
-
-        if (typ != null && untertyp != null) {
-            // Search by both Typ and Untertyp
-            anlagenList = anlageService.findAnlagenByTypAndUntertyp(typ, untertyp);
-            anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
-        } else if (typ != null) {
-            // Search by Typ only
-            anlagenList = anlageService.findAnlagenByTyp(typ);
-            anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
-        } else if (untertyp != null) {
-            // Search by Untertyp only
-            anlagenList = anlageService.findAnlagenByUntertyp(untertyp);
-            anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
-        } else {
-            // No filters applied, return an empty list or handle as needed
-            anlagenList = new ArrayList<>();
-        }
+        List<Anlage> anlagenList = anlageService.findAnlageBySchnittstellen(typ, untertyp);
         Integer anlagenCount =  anlagenList.size();
+        // Construct the dynamic header text
+        StringBuilder headerTextBuilder = new StringBuilder("Suche bei Schnittstelle");
+        if (typ != null && !typ.isEmpty()) {
+            headerTextBuilder.append(" - Typ: ").append(typ);
+        }
+        if (untertyp != null && !untertyp.isEmpty()) {
+            headerTextBuilder.append(" - Untertyp: ").append(untertyp);
+        }
 
         model.addAttribute("anlagenList", anlagenList);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", headerTextBuilder.toString());
         return "anlageList";
     }
 
@@ -184,11 +179,26 @@ public class AnlagenController extends TabellenController {
             Model model) {
 
         List<Anlage> anlagenList = anlageService.findAnlageByAutomaten(engineVersion, fccVersion, typ, unterTyp);
-        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
         Integer anlagenCount =  anlagenList.size();
+
+        // Dynamically construct the header text
+        StringBuilder headerTextBuilder = new StringBuilder("Suche bei Automaten");
+        if (engineVersion != null && !engineVersion.isEmpty()) {
+            headerTextBuilder.append(" - Engine Version: ").append(engineVersion);
+        }
+        if (fccVersion != null && !fccVersion.isEmpty()) {
+            headerTextBuilder.append(" - FCC Version: ").append(fccVersion);
+        }
+        if (typ != null && !typ.isEmpty()) {
+            headerTextBuilder.append(" - Typ: ").append(typ);
+        }
+        if (unterTyp != null && !unterTyp.isEmpty()) {
+            headerTextBuilder.append(" - Untertyp: ").append(unterTyp);
+        }
 
         model.addAttribute("anlagenList", anlagenList);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", headerTextBuilder.toString());
         return "anlageList";
     }
 
@@ -199,10 +209,19 @@ public class AnlagenController extends TabellenController {
             Model model) {
 
         List<Anlage> anlagenList = anlageService.findAnlageByZutritts(vonSektor, nachSektor);
-        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
         Integer anlagenCount =  anlagenList.size();
+
+        // Dynamically construct the header text
+        StringBuilder headerTextBuilder = new StringBuilder("Suche bei Zutritts");
+        if (vonSektor != null && !vonSektor.isEmpty()) {
+            headerTextBuilder.append(" - Von Sektor: ").append(vonSektor);
+        }
+        if (nachSektor != null && !nachSektor.isEmpty()) {
+            headerTextBuilder.append(" - Nach Sektor: ").append(nachSektor);
+        }
         model.addAttribute("anlagenList", anlagenList);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", headerTextBuilder.toString());
         return "anlageList";
     }
 
@@ -212,11 +231,12 @@ public class AnlagenController extends TabellenController {
             Model model) {
 
         List<Anlage> anlagenList = anlageService.findAnlageByMedienarten(typ);
-        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
         Integer anlagenCount = anlagenList.size();
 
+        //TODO: fix Suche bei Medienarten - Typ:
         model.addAttribute("anlagenList", anlagenList);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", "Suche bei Medienarten - Typ: " + typ);
         return "anlageList";
     }
 
@@ -225,12 +245,12 @@ public class AnlagenController extends TabellenController {
     public String getAnlageByFiskaldatenTyp(
             @RequestParam("typ") String typSelection,
             Model model) {
-        //TODO: fix the all typ
+
         List<Anlage> anlagenList = anlageService.findAnlageByFiskaldatenTyp(typSelection);
-        anlagenList.sort(Comparator.comparing(Anlage::getAnlagenName));
         Integer anlagenCount =  anlagenList.size();
         model.addAttribute("anlagenList", anlagenList);
         model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", "Suche bei Fiskaldaten - Typ: " + typSelection);
         return "anlageList";
     }
 

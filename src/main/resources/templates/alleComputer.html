@@ -6,11 +6,12 @@
 <div id="content" style="padding-bottom: 60px">
     <div class="container-fluid ">
         <div class="row align-items-baseline gy-3 mb-3">
-            <div class="col-12 col-sm-4 col-lg-1">
-                <span class="h4">Computer Informationen</span>
+            <div class="col-12 col-sm-4 col-lg-3">
+                <span class="h4">Computerinformationen</span>
             </div>
             <div class="col-12 col-sm-6 col-lg-2">
-                <span>Anzahl Treffer: [[${elementeAnzahl}]] </span>
+                <span  class="badge fs-6"
+                       style="background-color: #fecb01; color: black;">Anzahl Treffer: [[${elementeAnzahl}]] </span>
             </div>
             <div class="col-12 col-sm-4 col-lg-2">
                 <form th:replace="~{fragments/sucheComputer}"></form>
@@ -36,7 +37,7 @@
                 <!-- Add this block to show a message when no results are found -->
                 <tbody>
                 <tr th:if="${#lists.isEmpty(computers)}">
-                    <td colspan="8" class="text-center">No results found.</td>
+                    <td colspan="8" class="text-center">Keine Ergebnisse gefunden.</td>
                 </tr>
                 </tbody>
                 <tr th:each="computer : ${computers}">

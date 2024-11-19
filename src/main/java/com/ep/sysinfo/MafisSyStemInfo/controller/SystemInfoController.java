@@ -26,6 +26,7 @@ import org.springframework.data.domain.Page;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -125,35 +126,22 @@ public class SystemInfoController extends TabellenController {
      */
     @GetMapping("/getSystemInfo/{anlageId}")
     public String getSystem(Model model, @PathVariable Long anlageId) {
-        try {
-            // Retrieve the SystemInfo using Optional from the repository
-            Optional<SystemInfo> infoOptional = systemRepository.findByAnlageAnlagenId(anlageId);
+        // Retrieve the SystemInfo using the repository and throw exception if not found
+        SystemInfo info = Optional.ofNullable(systemRepository.findByAnlageAnlagenId(anlageId))
+                .orElseThrow(() -> new ResourceNotFoundException("SystemInfo mit AnlageId " + anlageId + " wurde nicht gefunden."));
 
-            if (infoOptional.isPresent()) {
-                SystemInfo info = infoOptional.get();
-
-                // Fetch the list of AutomatenTypDTO using the system id
-                List<AutomatenTypDTO> automaten = automatRepository.holeTypen(info.getSystem_id());
-                info.setAutomatenListe(automaten);  // Set Automaten list in SystemInfo
-                //TODO:Zutritts
-                // Fetch Zutritt list (also as AutomatenTypDTO) using the system id
-                //List<Zutritt> zutritten = zutrittRepository.holeTypen(info.getSystem_id());
-                //info.setZutritts(zutritten);  // Set Zutritts list in SystemInfo
-
-                // Add the info object to the model and return the view
-                model.addAttribute("info", info);
-                return "systemInfo";
-            } else {
-                // If no info is present, add a message to the model
-                model.addAttribute("message", "Keine Information vorhanden!");
-            }
-        } catch (Exception e) {
-            // Log the exception if necessary (optional)
-            logger.error("Error retrieving system information", e);
-            model.addAttribute("message", "Fehler beim Abrufen der Systeminformationen!");
+        // Fetch the list of AutomatenTypDTO using the system ID and throw exception if empty
+        List<AutomatenTypDTO> automaten = automatRepository.holeTypen(info.getSystem_id());
+        if (automaten.isEmpty()) {
+            throw new ResourceNotFoundException("Keine AutomatenTypen für System ID " + info.getSystem_id() + " gefunden.");
         }
 
-        return "response";
+        // Set Automaten list in SystemInfo
+        info.setAutomatenListe(automaten);
+
+        // Add the info object to the model and return the view
+        model.addAttribute("info", info);
+        return "systemInfo";
     }
 
     /**
@@ -165,22 +153,20 @@ public class SystemInfoController extends TabellenController {
      */
     @GetMapping("/getSystemInfoByAnlage/{anlageNr}")
     public String getSystemByAnlagenNr(Model model, @PathVariable Long anlageNr) {
-        try {
-            Optional<SystemInfo> infoOptional = Optional.ofNullable(systemRepository.findByAnlageAnlagenNr(anlageNr));
-            if (infoOptional.isPresent()) {
-                SystemInfo info = infoOptional.get();
-                List<AutomatenTypDTO> automaten = automatRepository.holeTypen(info.getSystem_id());
-                info.setAutomatenListe(automaten);  // Set Automaten list in SystemInfo
-                model.addAttribute("info", info);
-                return "systemInfo";
-            } else {
-                model.addAttribute("message", "Keine Information vorhanden!");
-            }
-        } catch (Exception e) {
-            logger.error("Fehler beim Abrufen der Systeminformation für AnlagenNr: {}", anlageNr, e);
-            model.addAttribute("message", "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.");
+        // Retrieve the SystemInfo using the repository and throw exception if not found
+        SystemInfo info = Optional.ofNullable(systemRepository.findByAnlageAnlagenNr(anlageNr))
+                .orElseThrow(() -> new ResourceNotFoundException("SystemInfo mit AnlagenNr " + anlageNr + " wurde nicht gefunden."));
+
+        // Fetch the list of AutomatenTypDTO using the system ID
+        List<AutomatenTypDTO> automaten = automatRepository.holeTypen(info.getSystem_id());
+        if (automaten.isEmpty()) {
+            throw new ResourceNotFoundException("Keine AutomatenTypen für System ID " + info.getSystem_id() + " gefunden.");
         }
-        return "response";
+        // Set Automaten list in SystemInfo
+        info.setAutomatenListe(automaten);
+        // Add the info object to the model and return the view
+        model.addAttribute("info", info);
+        return "systemInfo";
     }
 
     /**
@@ -192,18 +178,18 @@ public class SystemInfoController extends TabellenController {
      */
     @GetMapping("/sucheSystem")
     public String search(@RequestParam(value = "search.js", required = false) String q, Model model) {
-        try {
-            List<SystemInfo> infos;
-            if (q != null && !q.trim().isEmpty()) {
-                infos = (List<SystemInfo>) systemRepository.suchSystems(Long.parseLong(q.trim()), q.trim());
-            } else {
-                Sort sort = Sort.by(Sort.Direction.ASC, "anlage.anlagenName");
-                infos = systemRepository.findAll(sort);
-            }
-            model.addAttribute("infos", infos);
-        } catch (Exception e) {
-            logger.error("Fehler bei der Suche nach Systemen: {}", e.getMessage(), e);
+        List<SystemInfo> infos;
+
+        if (q != null && !q.trim().isEmpty()) {
+            // Parse the input and perform the search
+            infos = (List<SystemInfo>) systemRepository.suchSystems(Long.parseLong(q.trim()), q.trim());
+        } else {
+            // Fetch all records with sorting
+            Sort sort = Sort.by(Sort.Direction.ASC, "anlage.anlagenName");
+            infos = systemRepository.findAll(sort);
         }
+
+        model.addAttribute("infos", infos);
         return "alleInformationen";
     }
 
@@ -216,14 +202,13 @@ public class SystemInfoController extends TabellenController {
      */
     @GetMapping("/sortSystem/{sortBy}")
     public String sortSystem(Model model, @PathVariable String sortBy) {
-        try {
-            sortierReihenfolge = sortierReihenfolge == Sort.Direction.DESC ? Sort.Direction.ASC : Sort.Direction.DESC;
-            Sort sort = Sort.by(sortierReihenfolge, sortBy);
-            List<SystemInfo> infos = systemRepository.findAll(sort);
-            model.addAttribute("infos", infos);
-        } catch (Exception e) {
-            logger.error("Fehler beim Sortieren der Systeme: {}", e.getMessage(), e);
-        }
+        // Toggle sort direction
+        sortierReihenfolge = sortierReihenfolge == Sort.Direction.DESC ? Sort.Direction.ASC : Sort.Direction.DESC;
+        // Create sort object and fetch sorted data
+        Sort sort = Sort.by(sortierReihenfolge, sortBy);
+        List<SystemInfo> infos = systemRepository.findAll(sort);
+        // Add data to model
+        model.addAttribute("infos", infos);
         return "alleInformationen";
     }
 
@@ -235,21 +220,17 @@ public class SystemInfoController extends TabellenController {
      * @return
      */
     @GetMapping("/exportCVSDaten/{anlageNr}")
-    public ResponseEntity<InputStreamResource> erstelleCSV(@PathVariable Long anlageNr, Model model) {
-        try {
-            Optional<SystemInfo> infoOptional = Optional.ofNullable(systemRepository.findByAnlageAnlagenNr(anlageNr));
-            if (infoOptional.isPresent()) {
-                SystemInfo info = infoOptional.get();
-                String fileName = "Fiskal_" + sanitizeFileName(info.getAnlage().getAnlagenName()) + ".csv";
-                File csvFile = createCSVFile(info, fileName);
-                return downloadDatei(fileName, csvFile);
-            } else {
-                model.addAttribute("message", "Keine Information vorhanden!");
-            }
-        } catch (Exception e) {
-            logger.error("Fehler beim Erstellen der CSV: {}", e.getMessage(), e);
-        }
-        return null;
+    public ResponseEntity<InputStreamResource> erstelleCSV(@PathVariable Long anlageNr, Model model) throws IOException {
+        // Retrieve the SystemInfo
+        SystemInfo info = Optional.ofNullable(systemRepository.findByAnlageAnlagenNr(anlageNr))
+                .orElseThrow(() -> new ResourceNotFoundException("SystemInfo mit AnlagenNr " + anlageNr + " wurde nicht gefunden."));
+
+        // Generate CSV file
+        String fileName = "Fiskal_" + sanitizeFileName(info.getAnlage().getAnlagenName()) + ".csv";
+        File csvFile = createCSVFile(info, fileName);
+
+        // Return the file as a downloadable response
+        return downloadDatei(fileName, csvFile);
     }
 
     private File createCSVFile(SystemInfo info, String fileName) throws IOException {
@@ -261,7 +242,7 @@ public class SystemInfoController extends TabellenController {
             for (Fiskaldaten item : info.getFiskalService()) {
                 csvPrinter.printRecord(
                         item.getBezeichnung(),
-                        item.getFSystemId(),
+                        item.getFiskalSystemId(),
                         item.getTyp(),
                         format.format(java.sql.Timestamp.valueOf(item.getAktivAb())),
                         item.getFormat()
@@ -298,16 +279,12 @@ public class SystemInfoController extends TabellenController {
      */
     @GetMapping("/alleFiskal")
     public String alleFiskal(Model model) {
-        try {
-
-            // Retrieve all fiskal records and apply manual pagination
-            List<FiskalDto> allFiskal = fiskalService.listeFiskal();
-
-            model.addAttribute("fiskal", allFiskal);
-        } catch (Exception e) {
-            logger.error("Fehler in alleFiskal: {}", e.getMessage(), e);
-            model.addAttribute("ERROR", e.getMessage());
+        // Retrieve all fiskal records and apply manual pagination
+        List<FiskalDto> allFiskal = fiskalService.listeFiskal();
+        if (allFiskal.isEmpty()) {
+            throw new ResourceNotFoundException("Keine Fiskal-Daten gefunden.");
         }
+        model.addAttribute("fiskal", allFiskal);
         return "alleFiskal";
     }
 
@@ -320,17 +297,14 @@ public class SystemInfoController extends TabellenController {
      * @return
      */
     @GetMapping("/exportPDFDaten/{anlageNr}")
-    public ResponseEntity<InputStreamResource> erstellePdf(@PathVariable Long anlageNr, Model model) throws IOException {
+    public ResponseEntity<InputStreamResource> erstellePdf(@PathVariable Long anlageNr, Model model) throws IOException, DocumentException {
         SimpleDateFormat formatTag = new SimpleDateFormat("dd.MM.yyyy");
         SimpleDateFormat formatVoll = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
-        Optional<SystemInfo> infoOptional = Optional.ofNullable(systemRepository.findByAnlageAnlagenNr(anlageNr));
-        if (infoOptional.isEmpty()) {
-            model.addAttribute("message", "Keine Information vorhanden!");
-            return null;
-        }
+        // Retrieve SystemInfo or throw an exception if not found
+        SystemInfo info = Optional.ofNullable(systemRepository.findByAnlageAnlagenNr(anlageNr))
+                .orElseThrow(() -> new ResourceNotFoundException("SystemInfo mit AnlagenNr " + anlageNr + " wurde nicht gefunden."));
 
-        SystemInfo info = infoOptional.get();
         String anlagenName = sanitizeFileName(info.getAnlage().getAnlagenName());
         String filename = "fiskal_" + anlagenName + ".pdf";
 
@@ -341,45 +315,38 @@ public class SystemInfoController extends TabellenController {
         pdfFile.getParentFile().mkdirs();
 
         Document document = new Document(PageSize.A4.rotate(), 35f, 35f, 35f, 25f);
-        try {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
-            document.open();
-            document.addTitle("Fiskaldaten");
-            document.addSubject("Mafis InfoSystem");
-            document.addKeywords("Java, PDF, iText");
-            document.addCreator("eccos pro gmbH");
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfFile));
+        document.open();
+        document.addTitle("Fiskaldaten");
+        document.addSubject("Mafis InfoSystem");
+        document.addKeywords("Java, PDF, iText");
+        document.addCreator("eccos pro gmbH");
 
-            try {
-                Image image = Image.getInstance(Objects.requireNonNull(getClass().getResource("/static/images/logo.png")));
-                document.add(image);
-            } catch (IOException e) {
-                logger.warn("Logo image not found, skipping image addition.", e);
-            }
 
-            Collection<Fiskaldaten> fiskalDaten = info.getFiskalService();
+        Image image = Image.getInstance(Objects.requireNonNull(getClass().getResource("/static/images/logo.png")));
+        document.add(image);
 
-            Font catFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
-            Paragraph subPara = new Paragraph("Fiskaldaten für: " + info.getAnlage().getAnlagenName() + " Anlagen-Nr.:" + info.getAnlage().getAnlagenNr(), catFont);
-            Phrase datumText = new Phrase("Download am: " + formatVoll.format(new Date()));
 
-            document.add(subPara);
-            document.add(datumText);
-            document.add(Chunk.NEWLINE);
+        Collection<Fiskaldaten> fiskalDaten = info.getFiskalService();
 
-            addFiskalDataToPdf(document, fiskalDaten, formatTag);
+        Font catFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
+        Paragraph subPara = new Paragraph("Fiskaldaten für: " + info.getAnlage().getAnlagenName() + " Anlagen-Nr.:" + info.getAnlage().getAnlagenNr(), catFont);
+        Phrase datumText = new Phrase("Download am: " + formatVoll.format(new Date()));
 
-            ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT,
+        document.add(subPara);
+        document.add(datumText);
+        document.add(Chunk.NEWLINE);
+
+        addFiskalDataToPdf(document, fiskalDaten, formatTag);
+
+        ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_LEFT,
                     new Phrase("@eccos pro gmbh. Alle Rechte vorbehalten.", new Font(Font.FontFamily.HELVETICA, 9)),
                     document.leftMargin(), document.bottom() - 10, 0);
 
-            document.close();
+        document.close();
 
-            return downloadDatei(filename, pdfFile);
+        return downloadDatei(filename, pdfFile);
 
-        } catch (FileNotFoundException | DocumentException e) {
-            logger.warn("PDF für Fiskaldaten konnte NICHT erstellt werden !!! Anlagenname: {}", info.getAnlage().getAnlagenName(), e);
-        }
-        return null;
     }
 
     private void addFiskalDataToPdf(Document document, Collection<Fiskaldaten> fiskalDaten, SimpleDateFormat formatTag) throws DocumentException {
@@ -427,7 +394,7 @@ public class SystemInfoController extends TabellenController {
 
     private void addTableContent(PdfPTable table, Fiskaldaten item, SimpleDateFormat formatTag, Font font) {
         table.addCell(new PdfPCell(new Phrase(item.getBezeichnung(), font)));
-        table.addCell(new PdfPCell(new Phrase(item.getFSystemId(), font)));
+        table.addCell(new PdfPCell(new Phrase(item.getFiskalSystemId(), font)));
         table.addCell(new PdfPCell(new Phrase(item.getTyp(), font)));
         table.addCell(new PdfPCell(new Phrase(item.getAktivAb() != null ? formatTag.format(java.sql.Timestamp.valueOf(item.getAktivAb())) : "N/A", font)));
         table.addCell(new PdfPCell(new Phrase(item.getFormat().equalsIgnoreCase("N") ? "normal" : item.getFormat(), font)));

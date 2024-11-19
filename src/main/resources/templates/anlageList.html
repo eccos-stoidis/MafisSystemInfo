@@ -7,17 +7,26 @@
 <div id="content" style="padding-bottom: 60px">
     <div class="container-fluid ">
         <div class="row align-items-center gy-3 mb-3">
-            <!-- Anlagen Header -->
-            <div class="col-2">
-                <h4>Anlagen</h4>
+            <!-- Dynamic Header Text -->
+            <div class="col-12">
+                <h5 th:if="${headerText}" th:text="${headerText}" class="fw-bold mb-2"></h5>
             </div>
 
-            <div class="col-12 col-sm-6 col-lg-2">
-                <span th:text="'Anzahl Treffer: ' + ${anlagenCount}"></span>
+            <!-- Anlagen Header -->
+            <div class="col-2">
+                <h4 class="text-dark fw-semibold">Anlagen</h4>
             </div>
-            <!-- Search Input aligned to the right -->
+
+            <!-- Treffer Count -->
+            <div class="col-12 col-sm-6 col-lg-2">
+                <span th:text="'Anzahl Treffer: ' + ${anlagenCount}"  class="badge fs-6"
+                      style="background-color: #fecb01; color: black;"></span>
+            </div>
+
+            <!-- Search Input -->
             <div class="col-10 col-md-4 col-lg-2 ms-md-auto">
-                <input type="search" class="form-control search-input" name="search" id="search" placeholder="Search" data-table="customers-list">
+                <input type="search" class="form-control search-input shadow-sm"
+                       name="search" id="search" placeholder="Suchen" data-table="customers-list" style="border-color: #fecb01;">
             </div>
         </div>
 
@@ -35,7 +44,7 @@
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(anlagenList)}">
-                    <td colspan="8" class="text-center">No results found.</td>
+                    <td colspan="8" class="text-center">Keine Ergebnisse gefunden.</td>
                 </tr>
                 </tbody>
                 <tbody>
