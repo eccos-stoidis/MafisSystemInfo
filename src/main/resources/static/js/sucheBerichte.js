@@ -18,7 +18,29 @@
                    <div class="invalid-feedback">Füllen Sie dieses Feld aus</div>
                  `;
 
-            } else if (this.value === 'module') {
+            } else if (this.value === 'betreiber') {
+                   additionalFilters.innerHTML = `
+                     <label for="betreiberInput" class="form-label">Betriebe Name</label>
+                             <select id="betreiberInput" name="betreiber" class="form-select">
+                                 <option value="">Wählen Sie eine Option aus</option>
+                                 <option value="AQUAPARK">AQUAPARK</option>
+                                 <option value="BÄDER OSNABRÜCK">BÄDER OSNABRÜCK</option>
+                                 <option value="BÄDER SAARBRÜCKEN">BÄDER SAARBRÜCKEN</option>
+                                 <option value="DSBG">DSBG</option>
+                                 <option value="GENESIS GMBH">GENESIS GMBH</option>
+                                 <option value="GMF / PT">GMF / PT</option>
+                                 <option value="KANNEWISCHER">KANNEWISCHER</option>
+                                 <option value="MONTE MARE">MONTE MARE</option>
+                                 <option value="PROVA / SM">PROVA / SM</option>
+                                 <option value="SCHLÜSSEL-K.">SCHLÜSSEL-K.</option>
+                                 <option value="STADTWERKE">STADTWERKE</option>
+                                 <option value="VAMED">VAMED</option>
+                                 <option value="WUND">WUND</option>
+                             </select>
+                             <div class="invalid-feedback">Bitte wählen Sie einen Betreiber aus</div>
+                   `;
+
+            }else if (this.value === 'module') {
                  additionalFilters.innerHTML = `
                    <label for="moduleInput" class="form-label">Modul Typ</label>
                    <input type="text" id="moduleInput" name="module" class="form-control"placeholder="Geben Sie einen Modultyp ein">
@@ -150,7 +172,35 @@
                      }
 
                      filterData.zugProfitcenter = zugProfitcenter;
-                 }
+              }
+
+               // Validation for 'betreiber'
+               if (searchType === 'betreiber') {
+                   const betreiberDropdown = document.getElementById('betreiberInput');
+                   const selectedValue = betreiberDropdown.value;
+
+                      // Check if no option is selected
+                   if (!selectedValue.trim()) {
+                          // Add Bootstrap invalid styles
+                       betreiberDropdown.classList.add('is-invalid');
+
+                          // Add or update the invalid-feedback message
+                       const invalidFeedback = betreiberDropdown.nextElementSibling;
+                       if (invalidFeedback) {
+                           invalidFeedback.textContent = "Bitte wählen Sie einen Betreiber aus";
+                       }
+                       return; // Stop the function
+                   } else {
+                       // Remove invalid styles if a valid option is selected
+                       betreiberDropdown.classList.remove('is-invalid');
+                       const invalidFeedback = betreiberDropdown.nextElementSibling;
+                       if (invalidFeedback) {
+                           invalidFeedback.textContent = "";
+                       }
+                   }
+
+                   filterData.betreiberName = selectedValue;
+               }
               if (searchType === 'module') {
                     const moduleInput = document.getElementById('moduleInput');
                     const invalidFeedback = moduleInput.nextElementSibling;
@@ -362,7 +412,9 @@
                url = `/getAnlageByBetrieb?betriebName=${encodeURIComponent(filterData.betriebName || '')}`;
             } else if (searchType === 'profitcenter') {
                url = `/getAnlageByProfitCenter?zugProfitcenter=${encodeURIComponent(filterData.zugProfitcenter || '')}`;
-            } else if (searchType === 'module') {
+            }else if(searchType === 'betreiber') {
+                url = `/getAnlageByBetreiber?betreiberName=${encodeURIComponent(filterData.betreiberName || '')}`;
+            }else if (searchType === 'module') {
                url = `/getAnlageByModulTyp?modulTyp=${encodeURIComponent(filterData.modulTyp || '')}`;
             } else if (searchType === 'kassen' && filterData.typ.length) {
                url = `/getAnlageByKasse?typ=${encodeURIComponent(filterData.typ.join(','))}`;

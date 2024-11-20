@@ -1,7 +1,9 @@
 package com.ep.sysinfo.MafisSyStemInfo.service;
 
 import com.ep.sysinfo.MafisSyStemInfo.model.Anlage;
+import com.ep.sysinfo.MafisSyStemInfo.model.Betreiber;
 import com.ep.sysinfo.MafisSyStemInfo.repository.AnlageRepository;
+import com.ep.sysinfo.MafisSyStemInfo.repository.BetreiberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.List;
 public class AnlageServiceImpl implements AnlageService{
 
     private final AnlageRepository anlageRepository;
+
+    private final BetreiberRepository betreiberRepository;
     @Override
     public List<Anlage> findAllAnlagen() {
         return anlageRepository.findAll();
@@ -144,6 +148,16 @@ public class AnlageServiceImpl implements AnlageService{
                 )) // Apply filtering criteria
                 .sorted(Comparator.comparing(Anlage::getAnlagenName, Comparator.nullsLast(String::compareTo))) // Sort by name
                 .toList(); // Collect as a list
+    }
+
+    @Override
+    public List<Anlage> findAnlageByBetreiber(String betreiberName) {
+        List<Betreiber> betreiberList = betreiberRepository.findByBetreiberName(betreiberName);
+        List<Long> anlagenNrList = betreiberList.stream()
+                .map(Betreiber::getAnlagenNr)
+                .toList();
+        return anlageRepository.findByAnlagenNrIn(anlagenNrList);
+
     }
 
 
