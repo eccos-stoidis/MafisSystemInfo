@@ -89,4 +89,6 @@ public interface AnlageService {
      * @return      die Liste der Anlagen
      */
     List<Anlage> findAnlageByMedienarten(List<Integer> typ);
+
+    List<Anlage> findAnlageByBetreiber(String betreiberName);
 }

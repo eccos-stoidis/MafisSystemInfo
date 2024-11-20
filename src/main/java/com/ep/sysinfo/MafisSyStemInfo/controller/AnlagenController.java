@@ -256,6 +256,16 @@ public class AnlagenController extends TabellenController {
         return "anlageList";
     }
 
+    @GetMapping("getAnlageByBetreiber")
+    public String getAnlageByBetreiber(@RequestParam("betreiberName") String betreiberName, Model model) {
+        List<Anlage> anlagenList = anlageService.findAnlageByBetreiber(betreiberName);
+        Integer anlagenCount =  anlagenList.size();
+        model.addAttribute("anlagenList", anlagenList);
+        model.addAttribute("anlagenCount", anlagenCount);
+        model.addAttribute("headerText", "Suche bei Betreiber - Betreiber Name: " + betreiberName);
+        return "anlageList";
+    }
+
 
     /**
      * Sucht nach Anlagen mit einem optionalen Suchbegriff und Sortierung.
